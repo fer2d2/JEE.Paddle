@@ -1,5 +1,6 @@
 package data.entities;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,7 +12,9 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Token {
-
+    
+    public static final long TOKEN_LIFETIME = 60*60*1000;
+    
     @Id
     @GeneratedValue
     private int id;
@@ -23,6 +26,9 @@ public class Token {
     @JoinColumn
     private User user;
 
+    @Column(nullable = false)
+    private Calendar createdDatetime;
+
     public Token() {
     }
 
@@ -31,6 +37,7 @@ public class Token {
         this.user = user;
         this.value = new Encrypt().encryptInBase64UrlSafe("" + user.getId() + user.getUsername() + Long.toString(new Date().getTime())
                 + user.getPassword());
+        this.createdDatetime = Calendar.getInstance();
     }
 
     public int getId() {
@@ -45,6 +52,19 @@ public class Token {
         return user;
     }
 
+    public Calendar getCreatedDatetime() {
+        return createdDatetime;
+    }
+
+    public void setCreatedDatetime(Calendar createdDatetime) {
+        this.createdDatetime = createdDatetime;
+    }
+
+    public boolean hasExpired() {
+        return ((Calendar.getInstance().getTimeInMillis() - this.createdDatetime.getTimeInMillis()) > TOKEN_LIFETIME);
+    }
+    
+    
     @Override
     public int hashCode() {
         return id;
@@ -66,6 +86,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return "Token [id=" + id + ", value=" + value + ", userId=" + user.getId() + "]";
+        return "Token [id=" + id + ", value=" + value + ", user=" + user + ", createdDatetime=" + createdDatetime + "]";
     }
 }
