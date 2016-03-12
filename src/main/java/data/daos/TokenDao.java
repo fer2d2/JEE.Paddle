@@ -9,8 +9,7 @@ import data.entities.User;
 
 public interface TokenDao extends JpaRepository<Token, Integer> {
 
-    Token findByUser(User user);
+    List<Token> findByUser(User user);
 
-    List<Token> findAll();
-
+    Token findByValue(String value);
 }

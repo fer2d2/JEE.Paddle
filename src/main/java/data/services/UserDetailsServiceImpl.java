@@ -16,8 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import data.daos.AuthorizationDao;
+import data.daos.TokenDao;
 import data.daos.UserDao;
 import data.entities.Role;
+import data.entities.Token;
 import data.entities.User;
 
 @Service
@@ -28,25 +30,53 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserDao userDao;
 
     @Autowired
+    private TokenDao tokenDao;
+
+    @Autowired
     private AuthorizationDao authorizationDao;
 
     @Override
-    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        User user = userDao.findByTokenValue(username);
+    public UserDetails loadUserByUsername(final String userOrToken) throws UsernameNotFoundException {
+        User user = userDao.findByTokenValue(userOrToken);
         if (user == null) {
-            user = userDao.findByUsernameOrEmail(username);
+            user = userDao.findByUsernameOrEmail(userOrToken);
             if (user == null) {
                 throw new UsernameNotFoundException("Usuario no encontrado");
             } else {
-                return this.userBuilder(user.getUsername(), user.getPassword(), Arrays.asList(Role.AUTHENTICATED));
+                // REFACTOR
+                // List<Token> tokens = tokenDao.findByUser(user);
+                //
+                // boolean isValidToken = false;
+                //
+                // if (hasValidToken(tokens)) {
+                // isValidToken = true;
+                // }
+                return this.userBuilder(user.getUsername(), user.getPassword(), Arrays.asList(Role.AUTHENTICATED), true);
             }
         } else {
+            Token token = tokenDao.findByValue(userOrToken);
+            boolean isValidToken = false;
+
+            if (token != null) {
+                isValidToken = (token.hasExpired() == false);
+            }
+
             List<Role> roleList = authorizationDao.findRoleByUser(user);
-            return this.userBuilder(user.getUsername(), new BCryptPasswordEncoder().encode(""), roleList);
+            return this.userBuilder(user.getUsername(), new BCryptPasswordEncoder().encode(""), roleList, isValidToken);
         }
     }
 
-    private org.springframework.security.core.userdetails.User userBuilder(String username, String password, List<Role> roles) {
+    private boolean hasValidToken(List<Token> tokens) {
+        for (Token token : tokens) {
+            if (!token.hasExpired()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private org.springframework.security.core.userdetails.User userBuilder(String username, String password, List<Role> roles,
+            boolean isTokenValid) {
         boolean enabled = true;
         boolean accountNonExpired = true;
         boolean credentialsNonExpired = true;
@@ -55,7 +85,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.roleName()));
         }
-        return new org.springframework.security.core.userdetails.User(username, password, enabled, accountNonExpired,
-                credentialsNonExpired, accountNonLocked, authorities);
+        return new org.springframework.security.core.userdetails.User(username, password, enabled, accountNonExpired, credentialsNonExpired,
+                accountNonLocked, authorities);
     }
 }
