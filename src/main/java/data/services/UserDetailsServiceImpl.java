@@ -36,43 +36,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private AuthorizationDao authorizationDao;
 
     @Override
-    public UserDetails loadUserByUsername(final String userOrToken) throws UsernameNotFoundException {
-        User user = userDao.findByTokenValue(userOrToken);
-        if (user == null) {
-            user = userDao.findByUsernameOrEmail(userOrToken);
-            if (user == null) {
-                throw new UsernameNotFoundException("Usuario no encontrado");
-            } else {
-                // REFACTOR
-                // List<Token> tokens = tokenDao.findByUser(user);
-                //
-                // boolean isValidToken = false;
-                //
-                // if (hasValidToken(tokens)) {
-                // isValidToken = true;
-                // }
-                return this.userBuilder(user.getUsername(), user.getPassword(), Arrays.asList(Role.AUTHENTICATED), true);
-            }
-        } else {
-            Token token = tokenDao.findByValue(userOrToken);
-            boolean isValidToken = false;
-
-            if (token != null) {
-                isValidToken = (token.hasExpired() == false);
-            }
-
+    public UserDetails loadUserByUsername(final String usernameOrEmailOrTokenValue) throws UsernameNotFoundException {
+        User user = userDao.findByTokenValue(usernameOrEmailOrTokenValue);
+        if (user != null) {
             List<Role> roleList = authorizationDao.findRoleByUser(user);
+            boolean isValidToken = checkTokenIsValid(usernameOrEmailOrTokenValue);
             return this.userBuilder(user.getUsername(), new BCryptPasswordEncoder().encode(""), roleList, isValidToken);
+        } else {
+            user = userDao.findByUsernameOrEmail(usernameOrEmailOrTokenValue);
+            if (user != null) {
+                return this.userBuilder(user.getUsername(), user.getPassword(), Arrays.asList(Role.AUTHENTICATED), true);
+            } else {
+                throw new UsernameNotFoundException("Usuario no encontrado");
+            }
         }
     }
 
-    private boolean hasValidToken(List<Token> tokens) {
-        for (Token token : tokens) {
-            if (!token.hasExpired()) {
-                return true;
-            }
+    private boolean checkTokenIsValid(final String usernameOrEmailOrTokenValue) {
+        Token token = tokenDao.findByValue(usernameOrEmailOrTokenValue);
+        boolean isValidToken = false;
+        if (token != null) {
+            isValidToken = (token.hasExpired() == false);
         }
-        return false;
+        return isValidToken;
     }
 
     private org.springframework.security.core.userdetails.User userBuilder(String username, String password, List<Role> roles,

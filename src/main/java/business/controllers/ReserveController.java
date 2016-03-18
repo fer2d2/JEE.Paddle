@@ -50,14 +50,14 @@ public class ReserveController {
         List<Court> courtList = courtDao.findAll();
         Map<Integer, List<Integer>> allTimesAvailable = new HashMap<>();
 
-        int initialHour = 9;
+        int initialHour = START_TIME;
         if (Calendar.getInstance().get(Calendar.YEAR) == calendarDay.get(Calendar.YEAR)
                 && Calendar.getInstance().get(Calendar.DAY_OF_YEAR) == calendarDay.get(Calendar.DAY_OF_YEAR)) {
             initialHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         }
         for (Court court : courtList) {
             List<Integer> hourList = new ArrayList<>();
-            for (int hour = initialHour; hour <= 23; hour++) {
+            for (int hour = initialHour; hour <= END_TIME; hour++) {
                 hourList.add(hour);
             }
             allTimesAvailable.put(court.getId(), hourList);

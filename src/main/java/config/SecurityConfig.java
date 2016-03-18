@@ -3,6 +3,7 @@ package config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,10 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        // auth.inMemoryAuthentication().//
-        // withUser("user").password("123456").roles("USER").and().//
-        // withUser("manager").password("123456").roles("MANAGER").and().//
-        // withUser("admin").password("123456").roles("ADMIN", "MANAGER", "USER");
     }
 
     @Override
@@ -37,7 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()//
                 .antMatchers(Uris.SERVLET_MAP + Uris.TOKENS + "/**").authenticated()//
                 .antMatchers(Uris.SERVLET_MAP + Uris.COURTS + "/**").hasRole(Role.ADMIN.name())//
-                .and().httpBasic();
+                .antMatchers(HttpMethod.POST, Uris.SERVLET_MAP + Uris.RESERVES + "/**").hasRole(Role.PLAYER.name())//
+                .and().httpBasic();//
     }
 
     @Bean

@@ -9,7 +9,7 @@ import business.controllers.AdminController;
 
 @RestController
 @RequestMapping(Uris.SERVLET_MAP + Uris.ADMINS)
-public class AdminsResource {
+public class AdminResource {
 
     private AdminController adminController;
     
