@@ -1,7 +1,9 @@
 package data.daos;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,9 +29,24 @@ public class TokenDaoITest {
     @Test
     public void testFindByUser() {
         Token token = (Token) daosService.getMap().get("tu1");
+        List<Token> tokens = tokenDao.findByUser(token.getUser());
+        assertTrue(tokens.contains(token));
+
         User user = (User) daosService.getMap().get("u4");
-        assertEquals(token, tokenDao.findByUser(token.getUser()));
-        assertNull(tokenDao.findByUser(user));
+        assertEquals(0, tokenDao.findByUser(user).size());
+    }
+
+    @Test
+    public void testDeleteOldTokens() {
+        List<Token> tokens = tokenDao.findAll();
+        int numberOfTokensBeforeCleaning = tokens.size();
+        int numberOfExpiredTokens = daosService.getNumberOfExpiredTokens(tokens);
+
+        tokenDao.deleteOldTokens();
+
+        int numberOfTokensAfterCleaning = tokenDao.findAll().size();
+
+        assertEquals(numberOfTokensAfterCleaning, numberOfTokensBeforeCleaning - numberOfExpiredTokens);
     }
 
 }

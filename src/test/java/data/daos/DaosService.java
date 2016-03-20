@@ -52,6 +52,11 @@ public class DaosService {
         for (Token token : this.createTokens(users)) {
             map.put("t" + token.getUser().getUsername(), token);
         }
+        
+        for (Token token : this.createExpiredTokens(users)) {
+            map.put("et" + token.getUser().getUsername(), token);
+        }
+        
         for (User user : this.createPlayers(4, 4)) {
             map.put(user.getUsername(), user);
         }
@@ -89,6 +94,22 @@ public class DaosService {
         return tokenList;
     }
 
+    public List<Token> createExpiredTokens(User[] users) {
+        List<Token> tokenList = new ArrayList<>();
+        Token token;
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(1970, 1, 1);
+        
+        for (User user : users) {
+            token = new Token(user);
+            token.setCreatedDatetime(calendar);
+            tokenDao.save(token);
+            tokenList.add(token);
+        }
+        return tokenList;
+    }
+    
     public void createCourts(int initial, int size) {
         for (int id = 0; id < size; id++) {
             courtDao.save(new Court(id + initial));
@@ -101,5 +122,15 @@ public class DaosService {
 
     public void deleteAll() {
         genericService.deleteAllExceptAdmin();
+    }
+    
+    public int getNumberOfExpiredTokens(List<Token> tokens) {
+        int numberOfExpiredTokens = 0;
+        for(Token token : tokens) {
+            if(token.hasExpired()) {
+                numberOfExpiredTokens++;
+            }
+        }
+        return numberOfExpiredTokens;
     }
 }
