@@ -93,8 +93,21 @@ public class Training {
         this.trainees = trainees;
     }
 
-    public int getMAX_TRAINEES_PER_TRAINING() {
-        return MAX_TRAINEES_PER_TRAINING;
+    public boolean addTrainee(User user) {
+        if (this.trainees.size() == MAX_TRAINEES_PER_TRAINING) {
+            return false;
+        }
+
+        if (this.trainees.contains(user)) {
+            // if exists, return true but don't generate redundancy
+            return true;
+        }
+
+        return this.trainees.add(user);
+    }
+
+    public boolean removeTrainee(User user) {
+        return this.trainees.remove(user);
     }
 
     @Override
