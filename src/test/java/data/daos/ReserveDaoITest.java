@@ -20,11 +20,8 @@ import config.TestsPersistenceConfig;
 public class ReserveDaoITest {
 
     @Autowired
-    private DaosService daosService;
-
-    @Autowired
     private ReserveDao reserveDao;
-    
+
     @Autowired
     private CourtDao courtDao;
 
