@@ -11,27 +11,26 @@ import data.daos.UserDao;
 
 @Service
 public class DataService {
-    
+
     @Autowired
     private Populate populate;
 
     @Autowired
     private ReserveDao reserveDao;
-    
+
     @Autowired
     private AuthorizationDao authorizationDao;
-    
+
     @Autowired
     private TokenDao tokenDao;
-    
+
     @Autowired
     private CourtDao courtDao;
-    
+
     @Autowired
     private UserDao userDao;
-    
 
-    public void deleteAllExceptAdmin(){
+    public void deleteAllExceptAdmin() {
         reserveDao.deleteAll();
         authorizationDao.deleteAll();
         tokenDao.deleteAll();

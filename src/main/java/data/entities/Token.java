@@ -12,9 +12,9 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Token {
-    
-    public static final long TOKEN_LIFETIME = 60*60*1000;
-    
+
+    public static final long TOKEN_LIFETIME = 60 * 60 * 1000;
+
     @Id
     @GeneratedValue
     private int id;
@@ -35,8 +35,8 @@ public class Token {
     public Token(User user) {
         assert user != null;
         this.user = user;
-        this.value = new Encrypt().encryptInBase64UrlSafe("" + user.getId() + user.getUsername() + Long.toString(new Date().getTime())
-                + user.getPassword());
+        this.value = new Encrypt()
+                .encryptInBase64UrlSafe("" + user.getId() + user.getUsername() + Long.toString(new Date().getTime()) + user.getPassword());
         this.createdDatetime = Calendar.getInstance();
     }
 
@@ -63,8 +63,7 @@ public class Token {
     public boolean hasExpired() {
         return ((Calendar.getInstance().getTimeInMillis() - this.createdDatetime.getTimeInMillis()) > TOKEN_LIFETIME);
     }
-    
-    
+
     @Override
     public int hashCode() {
         return id;

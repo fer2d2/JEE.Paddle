@@ -11,6 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan(basePackages = {ResourceNames.REST_API, ResourceNames.CONTROLLERS, ResourceNames.DAOS, ResourceNames.SERVICES})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
+    // OJO -> Se escanea el paquete donde está lo relativo a web (la carpeta donde están los presentadores).
+    // Si no, no se puede llegar a ver y no funciona correctamente el proyecto.
+
     // CORS
     @Override
     public void addCorsMappings(CorsRegistry registry) {

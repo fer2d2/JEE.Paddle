@@ -12,11 +12,11 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @Configuration
 @PropertySource(ResourceNames.PROPERTIES)
 public class MailConfig {
-    
+
     @Autowired
     private Environment environment;
 
-    //Preparado para gmail
+    // Preparado para gmail
     @Bean
     public JavaMailSenderImpl mailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

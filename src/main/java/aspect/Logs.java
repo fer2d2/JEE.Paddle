@@ -48,8 +48,8 @@ public class Logs {
         Calendar before = Calendar.getInstance();
         Object obj = pjp.proceed();
         Calendar now = Calendar.getInstance();
-        LogManager.getLogger(pjp.getSignature().getDeclaringTypeName()).info(
-                "Processing time: " + (now.getTimeInMillis() - before.getTimeInMillis()) + "ms");
+        LogManager.getLogger(pjp.getSignature().getDeclaringTypeName())
+                .info("Processing time: " + (now.getTimeInMillis() - before.getTimeInMillis()) + "ms");
         return obj;
     }
 

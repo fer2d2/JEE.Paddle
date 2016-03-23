@@ -63,7 +63,7 @@ public class TrainingController {
         // TODO exceptions
         Training training = trainingDao.findById(id);
         TrainingWrapper trainingWrapper = buildTrainingWrapper(training);
-        
+
         return trainingWrapper;
     }
 
@@ -72,7 +72,7 @@ public class TrainingController {
         Training training = trainingDao.findById(id);
         training = updateTrainingFromTrainingWrapper(training, trainingWrapper);
         trainingDao.save(training);
-        
+
         return trainingWrapper;
     }
 
@@ -91,12 +91,12 @@ public class TrainingController {
         // TODO exceptions
         return trainingDao.deleteTrainee(trainingId, traineeId);
     }
-    
+
     private TrainingWrapper buildTrainingWrapper(Training training) {
         List<SimpleUserWrapper> traineesWrapper = buildTraineesWrapper(training);
-        
-        return new TrainingWrapper(training.getStartDatetime(), training.getEndDatetime(),
-                training.getCourt().getId(), new SimpleUserWrapper(training.getTrainer().getEmail()), traineesWrapper);
+
+        return new TrainingWrapper(training.getStartDatetime(), training.getEndDatetime(), training.getCourt().getId(),
+                new SimpleUserWrapper(training.getTrainer().getEmail()), traineesWrapper);
     }
 
     private List<SimpleUserWrapper> buildTraineesWrapper(Training training) {
@@ -108,7 +108,7 @@ public class TrainingController {
         }
         return traineesWrapper;
     }
-    
+
     private Training buildTrainingFromTrainingWrapper(TrainingWrapper trainingWrapper) {
         Court court = courtDao.findOne(trainingWrapper.getCourtId());
         User trainer = userDao.findByUsernameOrEmail(trainingWrapper.getTrainer().getEmail());
@@ -116,7 +116,7 @@ public class TrainingController {
         Training training = new Training(trainingWrapper.getStartDatetime(), trainingWrapper.getEndDatetime(), court, trainer, null);
         return training;
     }
-    
+
     private Training updateTrainingFromTrainingWrapper(Training training, TrainingWrapper trainingWrapper) {
         Court court = courtDao.findOne(trainingWrapper.getCourtId());
         User trainer = userDao.findByUsernameOrEmail(trainingWrapper.getTrainer().getEmail());

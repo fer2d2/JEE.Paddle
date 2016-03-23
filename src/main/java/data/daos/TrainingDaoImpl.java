@@ -9,10 +9,10 @@ public class TrainingDaoImpl implements TrainingExtended {
 
     @Autowired
     private TrainingDao trainingDao;
-    
+
     @Autowired
     private UserDao userDao;
-    
+
     @Override
     public boolean create() {
         // TODO si no sirve, eliminar
@@ -22,11 +22,11 @@ public class TrainingDaoImpl implements TrainingExtended {
     @Override
     public boolean deleteByTrainingId(int id) {
         Training training = trainingDao.findById(id);
-        
-        if(training == null) {
+
+        if (training == null) {
             return false;
         }
-        
+
         trainingDao.delete(training);
         return true;
     }
@@ -41,14 +41,14 @@ public class TrainingDaoImpl implements TrainingExtended {
     public boolean addTrainee(int trainingId, int traineeId) {
         Training training = trainingDao.findById(trainingId);
         User trainee = userDao.findById(traineeId);
-        
-        if(training == null || trainee == null) {
+
+        if (training == null || trainee == null) {
             return false;
         }
-        
+
         training.addTrainee(trainee);
         trainingDao.save(training);
-        
+
         return true;
     }
 
@@ -56,14 +56,14 @@ public class TrainingDaoImpl implements TrainingExtended {
     public boolean deleteTrainee(int trainingId, int traineeId) {
         Training training = trainingDao.findById(trainingId);
         User trainee = userDao.findById(traineeId);
-        
-        if(training == null || trainee == null) {
+
+        if (training == null || trainee == null) {
             return false;
         }
-        
+
         training.removeTrainee(trainee);
         trainingDao.save(training);
-        
+
         return true;
     }
 

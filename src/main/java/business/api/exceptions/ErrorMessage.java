@@ -11,9 +11,9 @@ public class ErrorMessage {
     public ErrorMessage(ApiException exception) {
         this(exception.getClass().getSimpleName(), exception.getMessage(), exception.getUrl());
     }
-    
+
     public ErrorMessage(Exception exception) {
-        this(exception.getClass().getSimpleName(), exception.getMessage(),"");
+        this(exception.getClass().getSimpleName(), exception.getMessage(), "");
     }
 
     public ErrorMessage(String error, String description, String url) {

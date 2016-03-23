@@ -47,7 +47,7 @@ public class Court {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        return id == ((Court)obj).id;
+        return id == ((Court) obj).id;
     }
 
     @Override

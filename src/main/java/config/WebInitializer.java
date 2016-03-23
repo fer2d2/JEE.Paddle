@@ -18,7 +18,7 @@ public class WebInitializer implements WebApplicationInitializer {
 
         // Se configura el paquete de los ficheros de configuración. En el propio paquete!!!
         annConWebAppCtx.setConfigLocation(this.getClass().getPackage().getName());
-        
+
         // Se configura el contexto utilizado en Securiry
         annConWebAppCtx.setServletContext(servletContext);
 
