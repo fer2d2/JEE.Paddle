@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import business.controllers.TrainingController;
+import business.wrapper.TrainingWrapper;
+import business.wrapper.UserWrapper;
 
 @RestController
 @RequestMapping(Uris.SERVLET_MAP + Uris.TRAININGS)
@@ -24,18 +26,18 @@ public class TrainingResource {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Object createTraining(@RequestParam(required = true) int id, @RequestParam(required = true) Calendar startDatetime,
+    public TrainingWrapper createTraining(@RequestParam(required = true) int id, @RequestParam(required = true) Calendar startDatetime,
             @RequestParam(required = true) Calendar endDatetime) {
         return null;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Object> showTrainings() {
+    public List<TrainingWrapper> showTrainings() {
         return null;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public Object showTraining(@PathVariable int id) {
+    public TrainingWrapper showTraining(@PathVariable int id) {
         return null;
     }
     
@@ -50,7 +52,7 @@ public class TrainingResource {
     }
 
     @RequestMapping(value = Uris.ID + Uris.TRAINEE, method = RequestMethod.POST)
-    public Object addTrainee(@PathVariable int trainingId, @PathVariable int traineeId) {
+    public UserWrapper addTrainee(@PathVariable int trainingId, @PathVariable int traineeId) {
         return null;
     }
 
