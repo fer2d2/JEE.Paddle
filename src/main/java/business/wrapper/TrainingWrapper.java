@@ -5,7 +5,6 @@ import java.util.List;
 
 import business.api.SimpleUserWrapper;
 import data.entities.Court;
-import data.entities.User;
 
 public class TrainingWrapper {
 
