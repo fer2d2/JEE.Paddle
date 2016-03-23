@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import business.controllers.TrainingController;
 import business.wrapper.TrainingWrapper;
-import business.wrapper.UserWrapper;
 
 @RestController
 @RequestMapping(Uris.SERVLET_MAP + Uris.TRAININGS)
@@ -50,7 +49,7 @@ public class TrainingResource {
     }
 
     @RequestMapping(value = Uris.ID + Uris.TRAINEE, method = RequestMethod.POST)
-    public UserWrapper addTrainee(@PathVariable int trainingId, @PathVariable int traineeId) {
+    public SimpleUserWrapper addTrainee(@PathVariable int trainingId, @PathVariable int traineeId) {
         return trainingController.addTrainee(trainingId, traineeId);
     }
 
