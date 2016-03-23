@@ -42,8 +42,8 @@ public class TrainingResource {
     }
     
     @RequestMapping(value = Uris.ID, method = RequestMethod.PUT)
-    public void updateTraining(@PathVariable int id) {
-
+    public TrainingWrapper updateTraining(@PathVariable int id) {
+        return null;
     }
 
     @RequestMapping(value = Uris.ID, method = RequestMethod.DELETE)
