@@ -3,6 +3,7 @@ package business.wrapper;
 import java.util.Calendar;
 import java.util.List;
 
+import business.api.SimpleUserWrapper;
 import data.entities.Court;
 import data.entities.User;
 
@@ -14,11 +15,12 @@ public class TrainingWrapper {
 
     private Court court;
 
-    private User trainer;
+    private SimpleUserWrapper trainer;
 
-    private List<User> trainees;
+    private List<SimpleUserWrapper> trainees;
 
-    public TrainingWrapper(Calendar startDatetime, Calendar endDatetime, Court court, User trainer, List<User> trainees) {
+    public TrainingWrapper(Calendar startDatetime, Calendar endDatetime, Court court, SimpleUserWrapper trainer,
+            List<SimpleUserWrapper> trainees) {
         super();
         this.startDatetime = startDatetime;
         this.endDatetime = endDatetime;
@@ -51,19 +53,19 @@ public class TrainingWrapper {
         this.court = court;
     }
 
-    public User getTrainer() {
+    public SimpleUserWrapper getTrainer() {
         return trainer;
     }
 
-    public void setTrainer(User trainer) {
+    public void setTrainer(SimpleUserWrapper trainer) {
         this.trainer = trainer;
     }
 
-    public List<User> getTrainees() {
+    public List<SimpleUserWrapper> getTrainees() {
         return trainees;
     }
 
-    public void setTrainees(List<User> trainees) {
+    public void setTrainees(List<SimpleUserWrapper> trainees) {
         this.trainees = trainees;
     }
 
