@@ -78,29 +78,18 @@ public class TrainingController {
 
     public boolean deleteTraining(int id) {
         // TODO exceptions
-        Training training = trainingDao.findById(id);
-        trainingDao.delete(training);
-        
-        return true;
+        return trainingDao.deleteByTrainingId(id);
     }
 
     public SimpleUserWrapper addTrainee(int trainingId, int traineeId) {
         // TODO exceptions
-        Training training = trainingDao.findById(trainingId);
-        User trainee = userDao.findById(traineeId);
-        
-        training.addTrainee(trainee);
-        return new SimpleUserWrapper(trainee.getEmail());
+        trainingDao.addTrainee(trainingId, traineeId);
+        return new SimpleUserWrapper(userDao.findById(traineeId).getEmail());
     }
 
     public boolean deleteTrainee(int trainingId, int traineeId) {
         // TODO exceptions
-        Training training = trainingDao.findById(trainingId);
-        User trainee = userDao.findById(traineeId);
-        
-        training.removeTrainee(trainee);
-        
-        return true;
+        return trainingDao.deleteTrainee(trainingId, traineeId);
     }
     
     private TrainingWrapper buildTrainingWrapper(Training training) {
