@@ -8,7 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {ResourceNames.REST_API, ResourceNames.CONTROLLERS, ResourceNames.DAOS, ResourceNames.SERVICES})
+@ComponentScan(basePackages = {ResourceNames.REST_API, ResourceNames.CONTROLLERS, ResourceNames.DAOS, ResourceNames.SERVICES,
+        ResourceNames.REST_API_VALIDATORS})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     // OJO -> Se escanea el paquete donde está lo relativo a web (la carpeta donde están los presentadores).

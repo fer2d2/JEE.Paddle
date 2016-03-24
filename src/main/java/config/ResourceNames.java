@@ -8,6 +8,8 @@ public class ResourceNames {
 
     public static final String REST_API = "business.api";
 
+    public static final String REST_API_VALIDATORS = "business.api.validation";
+
     public static final String CONTROLLERS = "business.controllers";
 
     public static final String ENTITIES = "data.entities";

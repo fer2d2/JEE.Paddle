@@ -33,7 +33,8 @@ public class TrainingDaoImpl implements TrainingExtended {
 
     @Override
     public boolean findByDatetime() {
-        // TODO para ser utilizado en un servicio que pueda comprobar si existe la posibilidad de añadir una reserva.
+        // TODO para ser utilizado en un servicio que pueda comprobar si
+        // existe la posibilidad de añadir una reserva.
         return false;
     }
 
@@ -43,6 +44,10 @@ public class TrainingDaoImpl implements TrainingExtended {
         User trainee = userDao.findById(traineeId);
 
         if (training == null || trainee == null) {
+            return false;
+        }
+
+        if (!training.addTrainee(trainee)) {
             return false;
         }
 
@@ -61,9 +66,11 @@ public class TrainingDaoImpl implements TrainingExtended {
             return false;
         }
 
-        training.removeTrainee(trainee);
-        trainingDao.save(training);
+        if (!training.removeTrainee(trainee)) {
+            return false;
+        }
 
+        trainingDao.save(training);
         return true;
     }
 

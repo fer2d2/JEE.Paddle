@@ -99,7 +99,8 @@ public class Training {
         }
 
         if (this.trainees.contains(user)) {
-            // if exists, return true but don't generate redundancy
+            // if exists, this method returns true but doesn't
+            // generate redundancy
             return true;
         }
 

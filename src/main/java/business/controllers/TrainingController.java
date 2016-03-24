@@ -60,7 +60,6 @@ public class TrainingController {
     }
 
     public TrainingWrapper showTraining(int id) {
-        // TODO exceptions
         Training training = trainingDao.findById(id);
         TrainingWrapper trainingWrapper = buildTrainingWrapper(training);
 
@@ -68,7 +67,6 @@ public class TrainingController {
     }
 
     public TrainingWrapper updateTraining(int id, TrainingWrapper trainingWrapper) {
-        // TODO exceptions
         Training training = trainingDao.findById(id);
         training = updateTrainingFromTrainingWrapper(training, trainingWrapper);
         trainingDao.save(training);
@@ -77,22 +75,46 @@ public class TrainingController {
     }
 
     public boolean deleteTraining(int id) {
-        // TODO exceptions
         return trainingDao.deleteByTrainingId(id);
     }
 
-    public SimpleUserWrapper addTrainee(int trainingId, int traineeId) {
-        // TODO exceptions
-        trainingDao.addTrainee(trainingId, traineeId);
-        return new SimpleUserWrapper(userDao.findById(traineeId).getEmail());
+    public TrainingWrapper addTrainee(int trainingId, int traineeId) {
+
+        if (!trainingDao.addTrainee(trainingId, traineeId)) {
+            return null;
+        }
+
+        return buildTrainingWrapper(trainingDao.findById(trainingId));
     }
 
     public boolean deleteTrainee(int trainingId, int traineeId) {
-        // TODO exceptions
         return trainingDao.deleteTrainee(trainingId, traineeId);
     }
 
+    public boolean trainingExists(int id) {
+        return trainingDao.exists(id);
+    }
+
+    public boolean userExists(int id) {
+        return userDao.exists(id);
+    }
+
+    public boolean userExists(String email) {
+        return (userDao.findByUsernameOrEmail(email) != null);
+    }
+
+    public boolean courtExists(int id) {
+        return courtDao.exists(id);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
     private TrainingWrapper buildTrainingWrapper(Training training) {
+
+        if (training == null) {
+            return null;
+        }
+
         List<SimpleUserWrapper> traineesWrapper = buildTraineesWrapper(training);
 
         return new TrainingWrapper(training.getStartDatetime(), training.getEndDatetime(), training.getCourt().getId(),
