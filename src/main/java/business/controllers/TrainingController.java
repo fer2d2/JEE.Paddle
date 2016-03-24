@@ -8,10 +8,12 @@ import org.springframework.stereotype.Controller;
 
 import business.api.SimpleUserWrapper;
 import business.wrapper.TrainingWrapper;
+import data.daos.AuthorizationDao;
 import data.daos.CourtDao;
 import data.daos.TrainingDao;
 import data.daos.UserDao;
 import data.entities.Court;
+import data.entities.Role;
 import data.entities.Training;
 import data.entities.User;
 
@@ -24,6 +26,8 @@ public class TrainingController {
 
     private UserDao userDao;
 
+    private AuthorizationDao authorizationDao;
+    
     @Autowired
     public void setTrainingDao(TrainingDao trainingDao) {
         this.trainingDao = trainingDao;
@@ -37,6 +41,11 @@ public class TrainingController {
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    @Autowired
+    public void setAuthorizationDao(AuthorizationDao authorizationDao) {
+        this.authorizationDao = authorizationDao;
     }
 
     public TrainingWrapper createTraining(TrainingWrapper trainingWrapper) {
@@ -91,6 +100,8 @@ public class TrainingController {
         return trainingDao.deleteTrainee(trainingId, traineeId);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    
     public boolean trainingExists(int id) {
         return trainingDao.exists(id);
     }
@@ -103,6 +114,14 @@ public class TrainingController {
         return (userDao.findByUsernameOrEmail(email) != null);
     }
 
+    public boolean userHasRole(int id, Role role) {
+        return (authorizationDao.findOneRoleByUser(userDao.findById(id), role) != null);
+    }
+
+    public boolean userHasRole(String email, Role role) {
+        return (authorizationDao.findOneRoleByUser(userDao.findByUsernameOrEmail(email), role) != null);
+    }
+    
     public boolean courtExists(int id) {
         return courtDao.exists(id);
     }

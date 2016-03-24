@@ -13,6 +13,9 @@ public class TrainingDaoImpl implements TrainingExtended {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private AuthorizationDao authorizationDao;
+    
     @Override
     public boolean create() {
         // TODO si no sirve, eliminar

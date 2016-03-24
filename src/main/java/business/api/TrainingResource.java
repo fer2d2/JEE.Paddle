@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import business.api.exceptions.InvalidUserGrantException;
 import business.api.exceptions.MaxUsersByTrainingReachedException;
 import business.api.exceptions.NotFoundCourtIdException;
 import business.api.exceptions.NotFoundTrainingIdException;
@@ -38,7 +39,7 @@ public class TrainingResource {
 
     @RequestMapping(method = RequestMethod.POST)
     public TrainingWrapper createTraining(@RequestBody TrainingWrapper trainingWrapper)
-            throws NotFoundUserIdException, NotFoundCourtIdException {
+            throws NotFoundUserIdException, NotFoundCourtIdException, InvalidUserGrantException {
 
         trainingValidator.validateUser(trainingWrapper.getTrainer().getEmail(), Role.TRAINER);
         trainingValidator.validateCourt(trainingWrapper.getCourtId());
@@ -64,7 +65,7 @@ public class TrainingResource {
 
     @RequestMapping(value = Uris.ID, method = RequestMethod.PUT)
     public TrainingWrapper updateTraining(@PathVariable int id, @RequestBody TrainingWrapper trainingWrapper)
-            throws NotFoundUserIdException, NotFoundCourtIdException, NotFoundTrainingIdException {
+            throws NotFoundUserIdException, NotFoundCourtIdException, NotFoundTrainingIdException, InvalidUserGrantException {
 
         trainingValidator.validateTraining(id);
         trainingValidator.validateUser(trainingWrapper.getTrainer().getEmail(), Role.TRAINER);
@@ -82,7 +83,7 @@ public class TrainingResource {
 
     @RequestMapping(value = Uris.ID + Uris.TRAINEE, method = RequestMethod.POST)
     public TrainingWrapper addTrainee(@PathVariable int trainingId, @PathVariable int traineeId)
-            throws NotFoundTrainingIdException, NotFoundUserIdException, MaxUsersByTrainingReachedException {
+            throws NotFoundTrainingIdException, NotFoundUserIdException, MaxUsersByTrainingReachedException, InvalidUserGrantException {
 
         trainingValidator.validateTraining(trainingId);
         trainingValidator.validateUser(traineeId, Role.PLAYER);
@@ -98,7 +99,7 @@ public class TrainingResource {
 
     @RequestMapping(value = Uris.ID + Uris.TRAINEE + Uris.ID, method = RequestMethod.DELETE)
     public void deleteTrainee(@PathVariable int trainingId, @PathVariable int traineeId)
-            throws NotFoundTrainingIdException, NotFoundUserIdException {
+            throws NotFoundTrainingIdException, NotFoundUserIdException, InvalidUserGrantException {
 
         trainingValidator.validateTraining(trainingId);
         trainingValidator.validateUser(traineeId, Role.PLAYER);
