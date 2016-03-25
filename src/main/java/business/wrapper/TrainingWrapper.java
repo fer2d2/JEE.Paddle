@@ -3,8 +3,6 @@ package business.wrapper;
 import java.util.Calendar;
 import java.util.List;
 
-import business.api.SimpleUserWrapper;
-
 public class TrainingWrapper {
 
     private Calendar startDatetime;

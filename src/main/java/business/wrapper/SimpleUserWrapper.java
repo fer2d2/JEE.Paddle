@@ -1,12 +1,25 @@
-package business.api;
+package business.wrapper;
 
 public class SimpleUserWrapper {
 
+    private int id;
+
     private String email;
+
+    public SimpleUserWrapper() {
+    }
 
     public SimpleUserWrapper(String email) {
         super();
         this.email = email;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -19,7 +32,7 @@ public class SimpleUserWrapper {
 
     @Override
     public String toString() {
-        return "SimpleUserWrapper [email=" + email + "]";
+        return "SimpleUserWrapper [id=" + id + ", email=" + email + "]";
     }
 
 }

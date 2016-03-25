@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import business.api.SimpleUserWrapper;
+import business.wrapper.SimpleUserWrapper;
 import business.wrapper.TrainingWrapper;
 import data.daos.AuthorizationDao;
 import data.daos.CourtDao;
