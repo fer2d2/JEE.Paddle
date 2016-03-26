@@ -35,7 +35,6 @@ public class TrainingResourceFunctionalTesting {
 
     @Before
     public void initialize() {
-        // restService.deleteAll();
         generateCourts();
         generateUsers();
     }
