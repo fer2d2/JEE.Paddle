@@ -9,6 +9,12 @@ public class SimpleUserWrapper {
     public SimpleUserWrapper() {
     }
 
+    public SimpleUserWrapper(int id, String email) {
+        super();
+        this.id = id;
+        this.email = email;
+    }
+    
     public SimpleUserWrapper(String email) {
         super();
         this.email = email;

@@ -1,8 +1,12 @@
 package business.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import business.wrapper.SimpleUserWrapper;
 import business.wrapper.UserWrapper;
 import data.daos.AuthorizationDao;
 import data.daos.UserDao;
@@ -31,11 +35,34 @@ public class UserController {
         if (null == userDao.findByUsernameOrEmail(userWrapper.getUsername())
                 && null == userDao.findByUsernameOrEmail(userWrapper.getEmail())) {
             User user = new User(userWrapper.getUsername(), userWrapper.getEmail(), userWrapper.getPassword(), userWrapper.getBirthDate());
-            userDao.save(user);
+            userDao.saveAndFlush(user);
             authorizationDao.save(new Authorization(user, Role.PLAYER));
             return true;
         } else {
             return false;
         }
+    }
+    
+    public boolean registrationTrainer(UserWrapper userWrapper) {
+        if (null == userDao.findByUsernameOrEmail(userWrapper.getUsername())
+                && null == userDao.findByUsernameOrEmail(userWrapper.getEmail())) {
+            User user = new User(userWrapper.getUsername(), userWrapper.getEmail(), userWrapper.getPassword(), userWrapper.getBirthDate());
+            userDao.saveAndFlush(user);
+            authorizationDao.save(new Authorization(user, Role.TRAINER));
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public List<SimpleUserWrapper> showTrainees() {
+        List<User> users = authorizationDao.findUserByRole(Role.PLAYER);
+        List<SimpleUserWrapper> userWrappers = new ArrayList<>();
+        
+        for(User user : users) {
+            userWrappers.add(new SimpleUserWrapper(user.getId(), user.getEmail()));
+        }
+        
+        return userWrappers;
     }
 }

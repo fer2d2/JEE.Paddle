@@ -13,15 +13,6 @@ public class TrainingDaoImpl implements TrainingExtended {
     @Autowired
     private UserDao userDao;
 
-    @Autowired
-    private AuthorizationDao authorizationDao;
-    
-    @Override
-    public boolean create() {
-        // TODO si no sirve, eliminar
-        return false;
-    }
-
     @Override
     public boolean deleteByTrainingId(int id) {
         Training training = trainingDao.findById(id);
@@ -54,7 +45,6 @@ public class TrainingDaoImpl implements TrainingExtended {
             return false;
         }
 
-        training.addTrainee(trainee);
         trainingDao.save(training);
 
         return true;
@@ -76,5 +66,4 @@ public class TrainingDaoImpl implements TrainingExtended {
         trainingDao.save(training);
         return true;
     }
-
 }

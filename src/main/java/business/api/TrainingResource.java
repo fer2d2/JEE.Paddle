@@ -81,14 +81,14 @@ public class TrainingResource {
         }
     }
 
-    @RequestMapping(value = Uris.ID + Uris.TRAINEE, method = RequestMethod.POST)
-    public TrainingWrapper addTrainee(@PathVariable int trainingId, @PathVariable int traineeId)
+    @RequestMapping(value = Uris.ID + Uris.TRAINEE + Uris.TRAINEE_ID, method = RequestMethod.POST)
+    public TrainingWrapper addTrainee(@PathVariable("id") int id, @PathVariable("traineeId") int traineeId)
             throws NotFoundTrainingIdException, NotFoundUserIdException, MaxUsersByTrainingReachedException, InvalidUserGrantException {
 
-        trainingValidator.validateTraining(trainingId);
-        trainingValidator.validateUser(traineeId, Role.PLAYER);
+        trainingValidator.validateTraining(id);
+        trainingValidator.validateUserById(traineeId, Role.PLAYER);
 
-        TrainingWrapper trainingWrapper = trainingController.addTrainee(trainingId, traineeId);
+        TrainingWrapper trainingWrapper = trainingController.addTrainee(id, traineeId);
 
         if (trainingWrapper == null) {
             throw new MaxUsersByTrainingReachedException();
@@ -96,15 +96,15 @@ public class TrainingResource {
 
         return trainingWrapper;
     }
-
-    @RequestMapping(value = Uris.ID + Uris.TRAINEE + Uris.ID, method = RequestMethod.DELETE)
-    public void deleteTrainee(@PathVariable int trainingId, @PathVariable int traineeId)
+    
+    @RequestMapping(value = Uris.ID + Uris.TRAINEE + Uris.TRAINEE_ID, method = RequestMethod.DELETE)
+    public void deleteTrainee(@PathVariable("id") int id, @PathVariable("traineeId") int traineeId)
             throws NotFoundTrainingIdException, NotFoundUserIdException, InvalidUserGrantException {
 
-        trainingValidator.validateTraining(trainingId);
-        trainingValidator.validateUser(traineeId, Role.PLAYER);
+        trainingValidator.validateTraining(id);
+        trainingValidator.validateUserById(traineeId, Role.PLAYER);
 
-        trainingController.deleteTrainee(trainingId, traineeId);
+        trainingController.deleteTrainee(id, traineeId);
     }
 
 }

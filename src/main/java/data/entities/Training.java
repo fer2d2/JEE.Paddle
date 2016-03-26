@@ -1,10 +1,12 @@
 package data.entities;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,6 +17,7 @@ public class Training {
     public final int MAX_TRAINEES_PER_TRAINING = 4;
 
     @Id
+    @GeneratedValue
     private int id;
 
     private Calendar startDatetime;
@@ -33,11 +36,17 @@ public class Training {
     private List<User> trainees;
 
     public Training() {
-        super();
+    }
+
+    public Training(Calendar startDatetime, Calendar endDatetime, Court court, User trainer) {
+        this.startDatetime = startDatetime;
+        this.endDatetime = endDatetime;
+        this.court = court;
+        this.trainer = trainer;
+        this.trainees = new ArrayList<User>();
     }
 
     public Training(Calendar startDatetime, Calendar endDatetime, Court court, User trainer, List<User> trainees) {
-        super();
         this.startDatetime = startDatetime;
         this.endDatetime = endDatetime;
         this.court = court;
@@ -47,10 +56,6 @@ public class Training {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Calendar getStartDatetime() {

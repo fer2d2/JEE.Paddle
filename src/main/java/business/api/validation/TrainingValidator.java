@@ -34,7 +34,7 @@ public class TrainingValidator {
         }
     }
 
-    public void validateUser(int traineeId, Role grant) throws NotFoundUserIdException, InvalidUserGrantException {
+    public void validateUserById(int traineeId, Role grant) throws NotFoundUserIdException, InvalidUserGrantException {
         if (!trainingController.userExists(traineeId)) {
             throw new NotFoundUserIdException();
         }

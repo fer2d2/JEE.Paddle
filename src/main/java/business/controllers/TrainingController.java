@@ -49,9 +49,12 @@ public class TrainingController {
     }
 
     public TrainingWrapper createTraining(TrainingWrapper trainingWrapper) {
-        // TODO exceptions
         Training training = buildTrainingFromTrainingWrapper(trainingWrapper);
-        trainingDao.save(training);
+        training = trainingDao.saveAndFlush(training);
+        
+        trainingWrapper = buildTrainingWrapper(training);
+        trainingWrapper.setId(training.getId());
+        
         return trainingWrapper;
     }
 
@@ -78,8 +81,9 @@ public class TrainingController {
     public TrainingWrapper updateTraining(int id, TrainingWrapper trainingWrapper) {
         Training training = trainingDao.findById(id);
         training = updateTrainingFromTrainingWrapper(training, trainingWrapper);
-        trainingDao.save(training);
-
+        training = trainingDao.saveAndFlush(training);
+        trainingWrapper.setId(training.getId());
+        
         return trainingWrapper;
     }
 
@@ -107,6 +111,7 @@ public class TrainingController {
     }
 
     public boolean userExists(int id) {
+        //return true;
         return userDao.exists(id);
     }
 
@@ -136,8 +141,8 @@ public class TrainingController {
 
         List<SimpleUserWrapper> traineesWrapper = buildTraineesWrapper(training);
 
-        return new TrainingWrapper(training.getStartDatetime(), training.getEndDatetime(), training.getCourt().getId(),
-                new SimpleUserWrapper(training.getTrainer().getEmail()), traineesWrapper);
+        return new TrainingWrapper(training.getId(), training.getStartDatetime(), training.getEndDatetime(), training.getCourt().getId(),
+                new SimpleUserWrapper(training.getTrainer().getId(), training.getTrainer().getEmail()), traineesWrapper);
     }
 
     private List<SimpleUserWrapper> buildTraineesWrapper(Training training) {
@@ -145,7 +150,7 @@ public class TrainingController {
         List<SimpleUserWrapper> traineesWrapper = new ArrayList<SimpleUserWrapper>();
 
         for (User trainee : trainees) {
-            traineesWrapper.add(new SimpleUserWrapper(trainee.getEmail()));
+            traineesWrapper.add(new SimpleUserWrapper(trainee.getId(), trainee.getEmail()));
         }
         return traineesWrapper;
     }
@@ -154,7 +159,8 @@ public class TrainingController {
         Court court = courtDao.findOne(trainingWrapper.getCourtId());
         User trainer = userDao.findByUsernameOrEmail(trainingWrapper.getTrainer().getEmail());
 
-        Training training = new Training(trainingWrapper.getStartDatetime(), trainingWrapper.getEndDatetime(), court, trainer, null);
+        Training training = new Training(trainingWrapper.getStartDatetime(), trainingWrapper.getEndDatetime(), court, trainer);
+
         return training;
     }
 

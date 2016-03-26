@@ -27,6 +27,16 @@ public class RestService {
         return token.getToken();
     }
 
+    public void registerTrainer(int suffix) {
+        UserWrapper player = new UserWrapperBuilder(suffix).build();
+        new RestBuilder<Object>(URL).path(Uris.USERS).path(Uris.TRAINER).body(player).post().build();
+    }
+    
+    public void registerTrainee(int suffix) {
+        UserWrapper player = new UserWrapperBuilder(suffix).build();
+        new RestBuilder<Object>(URL).path(Uris.USERS).body(player).post().build();
+    }
+    
     public void createCourt(String id) {
         new RestBuilder<Object>(URL).path(Uris.COURTS).param("id", id).basicAuth(this.loginAdmin(), "").post().build();
     }

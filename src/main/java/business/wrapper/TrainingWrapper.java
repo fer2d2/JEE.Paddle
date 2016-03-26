@@ -5,6 +5,10 @@ import java.util.List;
 
 public class TrainingWrapper {
 
+    public final int NOT_ID = -1;
+    
+    private int id;
+    
     private Calendar startDatetime;
 
     private Calendar endDatetime;
@@ -15,14 +19,38 @@ public class TrainingWrapper {
 
     private List<SimpleUserWrapper> trainees;
 
-    public TrainingWrapper(Calendar startDatetime, Calendar endDatetime, int courtId, SimpleUserWrapper trainer,
+    public TrainingWrapper() {
+        
+    }
+    
+    public TrainingWrapper(int id, Calendar startDatetime, Calendar endDatetime, int courtId, SimpleUserWrapper trainer,
             List<SimpleUserWrapper> trainees) {
         super();
+        this.id = id;
         this.startDatetime = startDatetime;
         this.endDatetime = endDatetime;
         this.courtId = courtId;
         this.trainer = trainer;
         this.trainees = trainees;
+    }
+    
+    public TrainingWrapper(Calendar startDatetime, Calendar endDatetime, int courtId, SimpleUserWrapper trainer,
+            List<SimpleUserWrapper> trainees) {
+        super();
+        this.id = NOT_ID;
+        this.startDatetime = startDatetime;
+        this.endDatetime = endDatetime;
+        this.courtId = courtId;
+        this.trainer = trainer;
+        this.trainees = trainees;
+    }
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Calendar getStartDatetime() {
@@ -67,8 +95,7 @@ public class TrainingWrapper {
 
     @Override
     public String toString() {
-        return "TrainingWrapper [startDatetime=" + startDatetime + ", endDatetime=" + endDatetime + ", courtId=" + courtId + ", trainer="
-                + trainer + ", trainees=" + trainees + "]";
+        return "TrainingWrapper [id=" + id + ", startDatetime=" + startDatetime + ", endDatetime=" + endDatetime + ", courtId=" + courtId
+                + ", trainer=" + trainer + ", trainees=" + trainees + "]";
     }
-
 }
