@@ -8,6 +8,8 @@ public class WebUris {
     
     public static final String COURTS = "/courts";
     
+    public static final String USERS = "/users";
+    
     public static final String COURT_ACTIVE = "/set-active";
     
     public static final String COURT_INACTIVE = "/set-inactive";

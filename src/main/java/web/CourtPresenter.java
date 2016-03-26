@@ -1,6 +1,5 @@
 package web;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -25,11 +24,6 @@ public class CourtPresenter {
 
     public CourtPresenter() {
 
-    }
-
-    @RequestMapping(WebUris.HOME)
-    public String home(Model model) {
-        return "/home";
     }
 
     @RequestMapping(value = WebUris.COURTS + WebUris.ACTION_SHOW_ALL, method = RequestMethod.GET)

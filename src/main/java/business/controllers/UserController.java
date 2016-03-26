@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 
 import business.wrapper.SimpleUserWrapper;
 import business.wrapper.UserWrapper;
+import business.wrapper.UserWrapperBuilder;
 import data.daos.AuthorizationDao;
 import data.daos.UserDao;
 import data.entities.Authorization;
@@ -42,7 +43,7 @@ public class UserController {
             return false;
         }
     }
-    
+
     public boolean registrationTrainer(UserWrapper userWrapper) {
         if (null == userDao.findByUsernameOrEmail(userWrapper.getUsername())
                 && null == userDao.findByUsernameOrEmail(userWrapper.getEmail())) {
@@ -54,15 +55,27 @@ public class UserController {
             return false;
         }
     }
-    
+
     public List<SimpleUserWrapper> showTrainees() {
         List<User> users = authorizationDao.findUserByRole(Role.PLAYER);
         List<SimpleUserWrapper> userWrappers = new ArrayList<>();
-        
-        for(User user : users) {
+
+        for (User user : users) {
             userWrappers.add(new SimpleUserWrapper(user.getId(), user.getEmail()));
         }
-        
+
+        return userWrappers;
+    }
+
+    public List<UserWrapper> showUsers() {
+        List<User> users = userDao.findAll();
+        List<UserWrapper> userWrappers = new ArrayList<>();
+
+        for (User user : users) {
+            userWrappers.add(new UserWrapperBuilder().username(user.getUsername()).email(user.getEmail()).password(user.getPassword())
+                    .birthDate(user.getBirthDate()).build());
+        }
+
         return userWrappers;
     }
 }
