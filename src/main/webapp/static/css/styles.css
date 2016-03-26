@@ -1,0 +1,16 @@
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	max-width: 960px;
+}
+
+.center-box {
+	margin: 0 auto;
+}
+
+.page-footer {
+	margin-top: 50px;
+}
