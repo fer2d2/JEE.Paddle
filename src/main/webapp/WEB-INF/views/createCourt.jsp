@@ -15,14 +15,14 @@
 			<label for="courtIdInput">Numero de pista</label>
 			<form:input path="courtId" placeholder="Id" required="required"
 				id="courtIdInput" />
-			<form:errors path="courtId" cssClass=".has-error" />
+			<form:errors path="courtId" cssClass="bg-danger" />
 		</div>
 
 		<div class="form-group">
 			<label for="courtActiveInput">Activa</label>
 			<form:select path="active">
 			     <form:options items="${activeOptions}" />
-			     <form:errors path="active" cssClass=".has-error" />
+			     <form:errors path="active" cssClass="bg-danger" />
 			</form:select>
 		</div>
 
