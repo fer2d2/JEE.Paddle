@@ -1,7 +1,8 @@
 package business.wrapper;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class UserWrapper {
 
@@ -11,6 +12,7 @@ public class UserWrapper {
 
     private String password;
 
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Calendar birthDate;
 
     public UserWrapper() {
@@ -57,8 +59,7 @@ public class UserWrapper {
 
     @Override
     public String toString() {
-        String time = new SimpleDateFormat("dd-MMM-yyyy ").format(birthDate.getTime());
-        return "UserWrapper [username=" + username + ", email=" + email + ", password=" + password + ", birthDate=" + time + "]";
+        return "UserWrapper [username=" + username + ", email=" + email + ", password=" + password + ", birthDate=" + birthDate + "]";
     }
 
 }

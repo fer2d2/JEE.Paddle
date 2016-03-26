@@ -31,12 +31,18 @@ public class UserPresenter {
     @RequestMapping(value = WebUris.USERS + WebUris.ACTION_CREATE, method = RequestMethod.GET)
     public String createUser(Model model) {
         model.addAttribute("user", new UserWrapper());
-        return "";
+        return "createUser";
     }
 
     @RequestMapping(value = WebUris.USERS + WebUris.ACTION_CREATE, method = RequestMethod.POST)
     public String createUserFormData(@Valid UserWrapper user, BindingResult bindingResult, Model model) {
-        return "";
+        if (userController.registration(user)) {
+            this.createUser(model);
+        } else {
+            bindingResult.rejectValue("username", "error.username", "Datos de usuario invalidos");
+        }
+
+        return "createUser";
     }
 
 }
