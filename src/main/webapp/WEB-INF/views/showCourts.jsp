@@ -13,6 +13,12 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
+
+				<div class="navigation text-right">
+					<a href="<c:url value='/courts/create'/>"
+						class="btn btn-default text-right" role="button">Crear pista</a>
+				</div>
+
 				<table class="table table-stripped custom-table">
 					<thead>
 						<tr>

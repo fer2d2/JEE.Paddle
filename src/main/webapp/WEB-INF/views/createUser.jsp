@@ -10,6 +10,10 @@
 		</h1>
 	</div>
 
+            <div class="navigation text-right">
+            <a href="<c:url value='/users/list'/>" class="btn btn-default text-right" role="button">Ver usuarios</a>
+            </div>
+
 	<form:form action="create" modelAttribute="user">
 		<div class="form-group">
 			<label for="userNameInput">Nombre de usuario</label>

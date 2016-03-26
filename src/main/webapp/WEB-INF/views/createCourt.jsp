@@ -10,6 +10,10 @@
 		</h1>
 	</div>
 
+            <div class="navigation text-right">
+            <a href="<c:url value='/courts/list'/>" class="btn btn-default text-right" role="button">Ver pistas</a>
+            </div>
+
 	<form:form action="create" modelAttribute="court">
 		<div class="form-group">
 			<label for="courtIdInput">Numero de pista</label>
