@@ -17,6 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import business.api.Uris;
 import business.api.exceptions.InvalidUserGrantException;
+import business.api.exceptions.MaxUsersByTrainingReachedException;
 import business.api.exceptions.NotFoundCourtIdException;
 import business.api.exceptions.NotFoundTrainingIdException;
 import business.api.exceptions.NotFoundUserIdException;
@@ -33,6 +34,8 @@ public class TrainingResourceFunctionalTesting {
 
     public final String NON_EXISTENT_USER_EMAIL = "usuarioInventado@gmail.com";
 
+    public final int MAX_TRAINEES = 4;
+    
     @Before
     public void initialize() {
         generateCourts();
@@ -254,6 +257,40 @@ public class TrainingResourceFunctionalTesting {
     }
 
     @Test
+    public void testAddTraineeExceedingMaxNumber() {
+        final int MAX_TRAINEES = 4;
+        String token = restService.loginAdmin();
+
+        TrainingWrapper trainingWrapper = generateTrainingWrapper();
+
+        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
+                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
+
+        List<SimpleUserWrapper> trainees = Arrays.asList(new RestBuilder<SimpleUserWrapper[]>(RestService.URL).path(Uris.USERS)
+                .path(Uris.TRAINEE).clazz(SimpleUserWrapper[].class).get().basicAuth(token, "").build());
+        
+        int trainingId = trainingWrapper2.getId();
+        
+        for(int i=0; i<MAX_TRAINEES; i++) {
+            int traineeId = trainees.get(i).getId();
+            new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).pathId(trainingId)
+                    .path(Uris.TRAINEE).pathId(traineeId).post().clazz(TrainingWrapper.class).basicAuth(token, "").build();
+        }
+
+        try {
+            int traineeId = trainees.get(MAX_TRAINEES).getId();
+            new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).pathId(trainingId)
+                    .path(Uris.TRAINEE).pathId(traineeId).post().clazz(TrainingWrapper.class).basicAuth(token, "").build();
+            fail();
+        } catch (HttpClientErrorException httpError) {
+            assertEquals(HttpStatus.CONFLICT, httpError.getStatusCode());
+            assertTrue(httpError.getResponseBodyAsString().contains(MaxUsersByTrainingReachedException.class.getSimpleName()));
+            LogManager.getLogger(this.getClass())
+                    .info("testDeleteTraining (" + httpError.getMessage() + "):\n    " + httpError.getResponseBodyAsString());
+        }
+    }
+    
+    @Test
     public void testAddTraineeInvalidTraining() {
         String token = restService.loginAdmin();
 
@@ -430,16 +467,20 @@ public class TrainingResourceFunctionalTesting {
     }
 
     private void generateUsers() {
-        int suffix = 1;
-        final int MAX_TRAINERS = 2;
-        final int MAX_TRAINEES = 5;
-
-        while (suffix <= MAX_TRAINERS) {
+        final int TRAINERS_NUMBER = 2;
+        final int TRAINEES_NUMBER = 5;
+        
+        final int TRAINERS_OFFSET = 1;
+        final int TRAINEES_LAST = TRAINERS_NUMBER + TRAINEES_NUMBER;
+        
+        int suffix = TRAINERS_OFFSET;
+        
+        while (suffix <= TRAINERS_NUMBER) {
             restService.registerTrainer(suffix);
             suffix++;
         }
 
-        while (suffix <= MAX_TRAINEES) {
+        while (suffix <= TRAINEES_LAST) {
             restService.registerTrainee(suffix);
             suffix++;
         }
