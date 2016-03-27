@@ -12,12 +12,15 @@
 
 <title>Spring - Fernando Moro</title>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-<link href="<c:url value='/static/css/bootstrap.css' />" rel="stylesheet">
-<link href="<c:url value='/static/css/jumbotron.css' />" rel="stylesheet">
+<script
+    src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<link href="<c:url value='/static/css/bootstrap.css' />"
+    rel="stylesheet">
+<link href="<c:url value='/static/css/jumbotron.css' />"
+    rel="stylesheet">
 <link href="<c:url value='/static/css/styles.css' />" rel="stylesheet">
 
 </head>
 <body>
 
-<jsp:include page="navbar.jsp" />
+    <jsp:include page="navbar.jsp" />

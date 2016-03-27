@@ -6,24 +6,27 @@
 <div class="container">
     <div class="page-header">
         <h1>
-            Listado de Usuarios <small>Listado completo de usuarios del sistema</small>
+            Listado de Usuarios <small>Listado completo de
+                usuarios del sistema</small>
         </h1>
     </div>
 
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-            
-            <div class="navigation text-right">
-            <a href="<c:url value='/users/create'/>" class="btn btn-default text-right" role="button">Crear usuario</a>
-            </div>
-            
+
+                <div class="navigation text-right">
+                    <a href="<c:url value='/users/create'/>"
+                        class="btn btn-default text-right" role="button">Crear
+                        usuario</a>
+                </div>
+
                 <table class="table table-stripped custom-table">
                     <thead>
                         <tr>
-                <th>Nombre de usuario</th>
-                <th>Email</th>
-                <th>Fecha de nacimiento</th>
+                            <th>Nombre de usuario</th>
+                            <th>Email</th>
+                            <th>Fecha de nacimiento</th>
                         </tr>
                     </thead>
                     <tbody>

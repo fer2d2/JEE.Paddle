@@ -4,50 +4,54 @@
 <jsp:include page="partials/header.jsp" />
 
 <div class="container">
-	<div class="page-header">
-		<h1>
-			Creacion de usuario<small>Rol de alumno</small>
-		</h1>
-	</div>
+    <div class="page-header">
+        <h1>
+            Creacion de usuario<small>Rol de alumno</small>
+        </h1>
+    </div>
 
-            <div class="navigation text-right">
-            <a href="<c:url value='/users/list'/>" class="btn btn-default text-right" role="button">Ver usuarios</a>
-            </div>
+    <div class="navigation text-right">
+        <a href="<c:url value='/users/list'/>"
+            class="btn btn-default text-right" role="button">Ver
+            usuarios</a>
+    </div>
 
-	<form:form action="create" modelAttribute="user">
-		<div class="form-group">
-			<label for="userNameInput">Nombre de usuario</label>
-			<form:input path="username" placeholder="username" required="required"
-				id="userNameInput" />
-			<form:errors path="username" cssClass="bg-danger" />
-		</div>
+    <form:form action="create" modelAttribute="user">
+        <div class="form-group">
+            <label for="userNameInput">Nombre de usuario</label>
+            <form:input path="username" placeholder="username"
+                required="required" id="userNameInput" />
+            <form:errors path="username" cssClass="bg-danger" />
+        </div>
 
-		<div class="form-group">
-			<label for="emailInput">Email</label>
-			<form:input path="email" placeholder="email@example.com" required="required"
-				id="emailInput" />
-			<form:errors path="email" cssClass="bg-danger" />
-		</div>
+        <div class="form-group">
+            <label for="emailInput">Email</label>
+            <form:input path="email" placeholder="email@example.com"
+                required="required" id="emailInput" />
+            <form:errors path="email" cssClass="bg-danger" />
+        </div>
 
-		<div class="form-group">
-			<label for="passwordInput">Contraseña</label>
-			<form:input type="password" path="password" placeholder="password"
-				required="required" id="passwordInput" />
-			<form:errors path="password" cssClass="bg-danger" />
-		</div>
+        <div class="form-group">
+            <label for="passwordInput">Contraseña</label>
+            <form:input type="password" path="password"
+                placeholder="password" required="required"
+                id="passwordInput" />
+            <form:errors path="password" cssClass="bg-danger" />
+        </div>
 
-		<div class="form-group">
-			<label for="birthDateInput">Fecha de nacimiento</label>
-			<form:input path="birthDate" placeholder="dd/mm/yyyy"
-				required="required" id="birthDateInput" />
-			<form:errors path="birthDate" cssClass="bg-danger" />
-		</div>
+        <div class="form-group">
+            <label for="birthDateInput">Fecha de nacimiento</label>
+            <form:input path="birthDate" placeholder="dd/mm/yyyy"
+                required="required" id="birthDateInput" />
+            <form:errors path="birthDate" cssClass="bg-danger" />
+        </div>
 
-		<div class="form-group">
-			<input type="submit" class="btn btn-info" value="Crear pista">
-		</div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-info"
+                value="Crear pista">
+        </div>
 
-	</form:form>
+    </form:form>
 
 </div>
 <jsp:include page="partials/footer.jsp" />
