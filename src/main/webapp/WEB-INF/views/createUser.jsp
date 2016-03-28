@@ -4,6 +4,10 @@
 <jsp:include page="partials/header.jsp" />
 
 <div class="container">
+    <c:if test="${SUCCESS_MESSAGE!=null}">
+        <div class="alert alert-success" role="alert">${SUCCESS_MESSAGE}</div>
+    </c:if>
+
     <div class="page-header">
         <h1>
             Creacion de usuario<small>Rol de alumno</small>
@@ -41,7 +45,7 @@
 
         <div class="form-group">
             <label for="birthDateInput">Fecha de nacimiento</label>
-            <form:input path="birthDate" placeholder="dd/mm/yyyy"
+            <form:input path="birthDate" placeholder="dd/mm/yyyy" type="date"
                 required="required" id="birthDateInput" />
             <form:errors path="birthDate" cssClass="bg-danger" />
         </div>

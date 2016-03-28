@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import business.controllers.CourtController;
 import business.wrapper.CourtState;
@@ -47,11 +48,12 @@ public class CourtPresenter {
     }
 
     @RequestMapping(value = WebUris.COURTS + WebUris.ACTION_CREATE, method = RequestMethod.POST)
-    public String createCourtFormData(Model model, @ModelAttribute(value = "court") CourtState court, BindingResult bindingResult) {
+    public String createCourtFormData(Model model, @ModelAttribute(value = "court") CourtState court, BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (courtController.createCourt(court.getCourtId(), court.isActive())) {
-            this.createCourt(model);
+            redirectAttributes.addFlashAttribute("SUCCESS_MESSAGE", "Pista dada de alta correctamente");
+            return "redirect:" + WebUris.COURTS + WebUris.ACTION_CREATE;
         } else {
-            bindingResult.rejectValue("courtId", "error.id", "La pista ya existe");
+            bindingResult.rejectValue("courtId", "error.courtId", "La pista ya existe");
         }
 
         return "createCourt";

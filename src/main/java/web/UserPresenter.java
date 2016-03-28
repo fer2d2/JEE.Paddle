@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import business.controllers.UserController;
 import business.wrapper.UserWrapper;
@@ -35,9 +36,10 @@ public class UserPresenter {
     }
 
     @RequestMapping(value = WebUris.USERS + WebUris.ACTION_CREATE, method = RequestMethod.POST)
-    public String createUserFormData(@Valid UserWrapper user, BindingResult bindingResult, Model model) {
+    public String createUserFormData(@Valid UserWrapper user, BindingResult bindingResult, Model model, final RedirectAttributes redirectAttributes) {
         if (userController.registration(user)) {
-            this.createUser(model);
+            redirectAttributes.addFlashAttribute("SUCCESS_MESSAGE", "Usuario dado de alta correctamente");
+            return "redirect:" + WebUris.USERS + WebUris.ACTION_CREATE;
         } else {
             bindingResult.rejectValue("username", "error.username", "Datos de usuario invalidos");
         }

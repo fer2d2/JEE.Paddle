@@ -4,6 +4,10 @@
 <jsp:include page="partials/header.jsp" />
 
 <div class="container">
+    <c:if test="${SUCCESS_MESSAGE!=null}">
+        <div class="alert alert-success" role="alert">${SUCCESS_MESSAGE}</div>
+    </c:if>
+
     <div class="page-header">
         <h1>
             Creacion de pista <small>Dar de alta una pista en el
