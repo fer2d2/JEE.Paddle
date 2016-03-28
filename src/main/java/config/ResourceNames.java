@@ -19,5 +19,7 @@ public class ResourceNames {
     public static final String SERVICES = "data.services";
     
     public static final String WEB = "web";
+    
+    public static final String BUSINESS_SERVICES = "business.services";
 
 }

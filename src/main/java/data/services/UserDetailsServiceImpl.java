@@ -65,7 +65,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             boolean isTokenValid) {
         boolean enabled = true;
         boolean accountNonExpired = true;
-        boolean credentialsNonExpired = true;
+        boolean credentialsNonExpired = isTokenValid;
         boolean accountNonLocked = true;
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (Role role : roles) {
