@@ -1,6 +1,7 @@
 package data.daos;
 
 import java.util.Calendar;
+import java.util.List;
 
 import data.entities.Training;
 
@@ -15,4 +16,6 @@ public interface TrainingExtended {
     public void deleteReservesMathingTraining(Training training);
     
     public boolean existsTrainingClassForDay(Calendar day);
+    
+    public List<Calendar> findAllDatetimesForTraining(Training training);
 }

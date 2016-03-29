@@ -1,5 +1,6 @@
 package data.daos;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -11,6 +12,9 @@ import data.entities.User;
 
 public class TrainingDaoImpl implements TrainingExtended {
 
+    final long DAY_MILLISECONDS = 86400000;
+    final int WEEK_DAYS = 7;
+    
     @Autowired
     private TrainingDao trainingDao;
 
@@ -116,5 +120,20 @@ public class TrainingDaoImpl implements TrainingExtended {
         }
         
         return false;
+    }
+    
+    public List<Calendar> findAllDatetimesForTraining(Training training) {
+        List<Calendar> datetimes = new ArrayList<>();
+        
+        long startDatetime = training.getStartDatetime().getTimeInMillis();
+        long endDatetime = training.getEndDatetime().getTimeInMillis();
+        
+        for(long date = startDatetime; date <= endDatetime; date+=(DAY_MILLISECONDS * WEEK_DAYS)) {
+            Calendar datetimeToAdd = Calendar.getInstance();
+            datetimeToAdd.setTimeInMillis(date);
+            datetimes.add(datetimeToAdd);
+        }
+        
+        return datetimes;
     }
 }

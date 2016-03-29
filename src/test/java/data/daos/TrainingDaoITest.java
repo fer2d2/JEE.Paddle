@@ -120,4 +120,26 @@ public class TrainingDaoITest {
         assertTrue(trainingDao.existsTrainingClassForDay(datetimeToQuery));
         
     }
+    
+    @Test
+    public void TestFindAllDatetimesForTraining() {
+        Calendar startDatetime = Calendar.getInstance();
+        Calendar endDatetime = Calendar.getInstance();
+        
+        int day = 3;
+        int weekDays = 7;
+        int numWeeksEndDatetime = 2;
+        
+        startDatetime.set(2016, 1, day, 17, 0, 0);
+        endDatetime.set(2016, 1, (weekDays * numWeeksEndDatetime) + day, 17, 0, 0);
+        
+        Court court = courtDao.findOne(1);
+        User trainer = (User) daosService.getMap().get("ut2");
+        
+        Training training = new Training(startDatetime, endDatetime, court, trainer);
+        trainingDao.save(training);
+        
+        assertEquals(3, trainingDao.findAllDatetimesForTraining(training).size());
+        
+    }
 }
