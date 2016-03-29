@@ -55,6 +55,8 @@ public class TrainingController {
         trainingWrapper = buildTrainingWrapper(training);
         trainingWrapper.setId(training.getId());
         
+        trainingDao.deleteReservesMathingTraining(training);
+        
         return trainingWrapper;
     }
 
@@ -83,6 +85,8 @@ public class TrainingController {
         training = updateTrainingFromTrainingWrapper(training, trainingWrapper);
         training = trainingDao.saveAndFlush(training);
         trainingWrapper.setId(training.getId());
+        
+        trainingDao.deleteReservesMathingTraining(training);
         
         return trainingWrapper;
     }
