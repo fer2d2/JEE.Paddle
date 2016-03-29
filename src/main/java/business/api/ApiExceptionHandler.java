@@ -11,6 +11,7 @@ import business.api.exceptions.AlreadyExistUserFieldException;
 import business.api.exceptions.ApiException;
 import business.api.exceptions.ErrorMessage;
 import business.api.exceptions.InvalidCourtReserveException;
+import business.api.exceptions.InvalidCourtReserveTrainingExistsException;
 import business.api.exceptions.InvalidDateException;
 import business.api.exceptions.InvalidUserFieldException;
 import business.api.exceptions.InvalidUserGrantException;
@@ -48,7 +49,7 @@ public class ApiExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler({AlreadyExistUserFieldException.class, AlreadyExistUserFieldException.class, InvalidCourtReserveException.class, InvalidUserGrantException.class, MaxUsersByTrainingReachedException.class})
+    @ExceptionHandler({AlreadyExistUserFieldException.class, AlreadyExistUserFieldException.class, InvalidCourtReserveException.class, InvalidCourtReserveTrainingExistsException.class, InvalidUserGrantException.class, MaxUsersByTrainingReachedException.class})
     @ResponseBody
     public ErrorMessage conflictRequest(ApiException exception) {
         ErrorMessage apiErrorMessage = new ErrorMessage(exception);

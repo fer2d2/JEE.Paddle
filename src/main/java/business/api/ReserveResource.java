@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import business.api.exceptions.InvalidCourtReserveException;
+import business.api.exceptions.InvalidCourtReserveTrainingExistsException;
 import business.api.exceptions.InvalidDateException;
 import business.controllers.CourtController;
 import business.controllers.ReserveController;
@@ -60,10 +61,11 @@ public class ReserveResource {
 
     @RequestMapping(method = RequestMethod.POST)
     public void reserveCourt(@AuthenticationPrincipal User activeUser, @RequestBody AvailableTime availableTime)
-            throws InvalidCourtReserveException, InvalidDateException {
+            throws InvalidCourtReserveException, InvalidDateException, InvalidCourtReserveTrainingExistsException {
         if (!courtController.exist(availableTime.getCourtId())) {
             throw new InvalidCourtReserveException("" + availableTime.getCourtId());
         }
+
         Calendar date = availableTime.getTime();
         date.set(Calendar.MINUTE, 0);
         date.set(Calendar.SECOND, 0);
@@ -72,9 +74,15 @@ public class ReserveResource {
             throw new InvalidCourtReserveException(date.get(Calendar.HOUR_OF_DAY) + " fuera de rango");
         }
         this.validateDay(date);
+
+        if (!reserveController.existsTrainingForReserveDatetime(date)) {
+            throw new InvalidCourtReserveTrainingExistsException();
+        }
+
         if (!reserveController.reserveCourt(availableTime.getCourtId(), date, activeUser.getUsername())) {
             throw new InvalidCourtReserveException(availableTime.getCourtId() + "-" + availableTime.getTime());
 
         }
     }
+
 }

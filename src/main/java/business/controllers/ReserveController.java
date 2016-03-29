@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 
 import data.daos.CourtDao;
 import data.daos.ReserveDao;
+import data.daos.TrainingDao;
 import data.daos.UserDao;
 import data.entities.Court;
 import data.entities.Reserve;
@@ -29,6 +30,8 @@ public class ReserveController {
 
     private UserDao userDao;
 
+    private TrainingDao trainingDao;
+    
     @Autowired
     public void setReserveDao(ReserveDao reserveDao) {
         this.reserveDao = reserveDao;
@@ -44,6 +47,11 @@ public class ReserveController {
         this.userDao = userDao;
     }
 
+    @Autowired
+    public void setTrainingDao(TrainingDao trainingDao) {
+        this.trainingDao = trainingDao;
+    }
+    
     public Availability showCourtAvailability(Calendar calendarDay) {
         Calendar endDay = (Calendar) calendarDay.clone();
         endDay.add(Calendar.DAY_OF_MONTH, 1);
@@ -71,6 +79,7 @@ public class ReserveController {
 
     public boolean reserveCourt(int courtId, Calendar date, String username) {
         Reserve reserve = new Reserve(courtDao.findOne(courtId), date);
+        
         if (reserveDao.findByCourtAndDate(reserve.getCourt(), reserve.getDate()) != null) {
             return false;
         }
@@ -83,4 +92,11 @@ public class ReserveController {
         return hour >= START_TIME && hour <= END_TIME;
     }
 
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    
+    public boolean existsTrainingForReserveDatetime(Calendar calendar) {
+        return trainingDao.existsTrainingClassForDay(calendar);
+    }
+    
 }
