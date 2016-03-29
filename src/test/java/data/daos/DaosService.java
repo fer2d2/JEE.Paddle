@@ -16,6 +16,7 @@ import data.entities.Court;
 import data.entities.Reserve;
 import data.entities.Role;
 import data.entities.Token;
+import data.entities.Training;
 import data.entities.User;
 import data.services.DataService;
 
@@ -38,6 +39,9 @@ public class DaosService {
     private ReserveDao reserveDao;
 
     @Autowired
+    private TrainingDao trainingDao;
+    
+    @Autowired
     private DataService genericService;
 
     private Map<String, Object> map;
@@ -49,6 +53,12 @@ public class DaosService {
         for (User user : users) {
             map.put(user.getUsername(), user);
         }
+        
+        User[] trainers = this.createTrainers(0, 4);
+        for (User trainer : trainers) {
+            map.put(trainer.getUsername(), trainer);
+        }
+        
         for (Token token : this.createTokens(users)) {
             map.put("t" + token.getUser().getUsername(), token);
         }
@@ -71,6 +81,9 @@ public class DaosService {
             date.add(Calendar.HOUR_OF_DAY, 1);
             reserveDao.save(new Reserve(courtDao.findOne(i+1), users[i], date));
         }
+        
+        Training training = this.createTraining(trainers[0]);
+        map.put("training", training);
     }
 
     public User[] createPlayers(int initial, int size) {
@@ -83,6 +96,16 @@ public class DaosService {
         return users;
     }
 
+    public User[] createTrainers(int initial, int size) {
+        User[] users = new User[size];
+        for (int i = 0; i < size; i++) {
+            users[i] = new User("ut" + (i + initial), "ut" + (i + initial) + "@gmail.com", "p", Calendar.getInstance());
+            userDao.save(users[i]);
+            authorizationDao.save(new Authorization(users[i], Role.TRAINER));
+        }
+        return users;
+    }
+    
     public List<Token> createTokens(User[] users) {
         List<Token> tokenList = new ArrayList<>();
         Token token;
@@ -132,5 +155,24 @@ public class DaosService {
             }
         }
         return numberOfExpiredTokens;
+    }
+    
+    public Training createTraining(User trainer) {
+        Calendar startDatetime = Calendar.getInstance();
+        Calendar endDatetime = Calendar.getInstance();
+        
+        int day = 3;
+        int weekDays = 7;
+        int numWeeksEndDatetime = 2;
+        
+        startDatetime.set(2016, 2, day, 18, 0, 0);
+        endDatetime.set(2016, 2, (weekDays * numWeeksEndDatetime) + day, 18, 0, 0);
+        
+        Court court = courtDao.findOne(1);
+        
+        Training training = new Training(startDatetime, endDatetime, court, trainer);
+        trainingDao.save(training);
+        
+        return training;
     }
 }

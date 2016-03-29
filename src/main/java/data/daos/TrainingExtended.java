@@ -2,6 +2,8 @@ package data.daos;
 
 import java.util.Calendar;
 
+import data.entities.Training;
+
 public interface TrainingExtended {
 
     public boolean deleteByTrainingId(int id);
@@ -10,7 +12,7 @@ public interface TrainingExtended {
 
     public boolean deleteTrainee(int trainingId, int traineeId);
 
-    public void deleteReservesMathingTraining(Calendar startDatetime, Calendar endDatetime);
+    public void deleteReservesMathingTraining(Training training);
     
     public boolean existsTrainingClassForDay(Calendar day);
 }

@@ -68,7 +68,10 @@ public class TrainingDaoImpl implements TrainingExtended {
     }
 
     @Override
-    public void deleteReservesMathingTraining(Calendar startDatetime, Calendar endDatetime) {
+    public void deleteReservesMathingTraining(Training training) {
+        Calendar startDatetime = training.getStartDatetime();
+        Calendar endDatetime = training.getEndDatetime();
+        
         List<Reserve> reserves = reserveDao.findByDateBetween(startDatetime, endDatetime);
 
         int trainingDayOfWeek = startDatetime.get(Calendar.DAY_OF_WEEK);
@@ -80,9 +83,11 @@ public class TrainingDaoImpl implements TrainingExtended {
             int reserveDayOfWeek = reserveDate.get(Calendar.DAY_OF_WEEK);
             int reserveHour = reserveDate.get(Calendar.HOUR_OF_DAY);
             int reserveMinutes = reserveDate.get(Calendar.MINUTE);
-
-            if (reserveDayOfWeek == trainingDayOfWeek && reserveHour == trainingHour && reserveMinutes == trainingMinutes) {
-                reserveDao.delete(reserve);
+            
+            if(reserve.getCourt().getId() == training.getCourt().getId()) {
+                if (reserveDayOfWeek == trainingDayOfWeek && reserveHour == trainingHour && reserveMinutes == trainingMinutes) {
+                    reserveDao.delete(reserve);
+                }
             }
         }
     }
