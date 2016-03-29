@@ -75,7 +75,7 @@ public class ReserveResource {
         }
         this.validateDay(date);
 
-        if (!reserveController.existsTrainingForReserveDatetime(date)) {
+        if (reserveController.existsTrainingForReserveDatetime(date)) {
             throw new InvalidCourtReserveTrainingExistsException();
         }
 

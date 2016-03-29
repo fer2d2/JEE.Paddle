@@ -15,6 +15,7 @@ import data.daos.TrainingDao;
 import data.daos.UserDao;
 import data.entities.Court;
 import data.entities.Reserve;
+import data.entities.Training;
 import business.wrapper.Availability;
 
 @Controller
@@ -74,7 +75,24 @@ public class ReserveController {
         for (Reserve reserve : reserveList) {
             allTimesAvailable.get(reserve.getCourt().getId()).remove(new Integer(reserve.getDate().get(Calendar.HOUR_OF_DAY)));
         }
+        
+        allTimesAvailable = removeAllTrainingDates(allTimesAvailable);
+        
         return new Availability(calendarDay, allTimesAvailable);
+    }
+
+    private Map<Integer, List<Integer>> removeAllTrainingDates(Map<Integer, List<Integer>> allTimesAvailable) {
+        List<Training> trainingList = trainingDao.findAll();
+        for (Training training : trainingList) {
+            Court court = training.getCourt();
+            List<Calendar> trainingDates = trainingDao.findAllDatetimesForTraining(training);
+            
+            for(Calendar trainingDate : trainingDates) {
+                allTimesAvailable.get(court.getId()).remove(new Integer(trainingDate.get(Calendar.HOUR_OF_DAY)));
+            }
+        }
+        
+        return allTimesAvailable;
     }
 
     public boolean reserveCourt(int courtId, Calendar date, String username) {

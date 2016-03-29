@@ -18,7 +18,7 @@ import business.wrapper.CourtState;
 public class CourtResourceFunctionalTesting {
 
     RestService restService = new RestService();
-
+    
     @Test
     public void testCreateCourt() {
         restService.createCourt("1");

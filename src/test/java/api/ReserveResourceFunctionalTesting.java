@@ -12,7 +12,7 @@ import business.wrapper.AvailableTime;
 public class ReserveResourceFunctionalTesting {
 
     RestService restService = new RestService();
-
+    
     @Test
     public void testshowAvailability() {
         restService.createCourt("1");
