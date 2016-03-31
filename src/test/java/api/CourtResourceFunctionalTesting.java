@@ -56,6 +56,7 @@ public class CourtResourceFunctionalTesting {
         String token = restService.registerAndLoginPlayer();
         try {
             new RestBuilder<Object>(RestService.URL).path(Uris.COURTS).pathId(1).path(Uris.ACTIVE).basicAuth(token, "").post().build();
+            fail();
         } catch (HttpClientErrorException httpError) {
             LogManager.getLogger(this.getClass()).info(
                     "testChangeCourtActivationTrueUnauthorization (" + httpError.getMessage() + "):\n    "

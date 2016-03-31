@@ -2,6 +2,7 @@ package api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -21,11 +22,11 @@ import business.wrapper.TrainingWrapper;
 public class ReserveResourceFunctionalTesting {
 
     RestService restService = new RestService();
-    
+
     final long DAY_MILLISECONDS = 86400000;
 
     final int WEEK_DAYS = 7;
-    
+
     @Test
     public void testshowAvailability() {
         restService.createCourt("1");
@@ -50,9 +51,9 @@ public class ReserveResourceFunctionalTesting {
         String token = restService.registerAndLoginPlayer();
         Calendar day = Calendar.getInstance();
         day.add(Calendar.DAY_OF_YEAR, 1);
-        day.set(Calendar.HOUR_OF_DAY,12);
+        day.set(Calendar.HOUR_OF_DAY, 12);
         new RestBuilder<String>(RestService.URL).path(Uris.RESERVES).basicAuth(token, "").body(new AvailableTime(1, day)).post().build();
-        day.set(Calendar.HOUR_OF_DAY,14);
+        day.set(Calendar.HOUR_OF_DAY, 14);
         new RestBuilder<String>(RestService.URL).path(Uris.RESERVES).basicAuth(token, "").body(new AvailableTime(2, day)).post().build();
     }
 
@@ -60,7 +61,7 @@ public class ReserveResourceFunctionalTesting {
     public void testCreateReserveMatchingTraining() {
         restService.createCourt("1");
         restService.registerTrainer(1);
-        
+
         Calendar startDatetime = GregorianCalendar.getInstance();
         Calendar endDatetime = GregorianCalendar.getInstance();
         Calendar datetimeToQuery = GregorianCalendar.getInstance();
@@ -90,19 +91,20 @@ public class ReserveResourceFunctionalTesting {
                 .basicAuth(token, "").build();
 
         token = restService.registerAndLoginPlayer();
-        
+
         try {
-        new RestBuilder<String>(RestService.URL).path(Uris.RESERVES).basicAuth(token, "").body(new AvailableTime(1, datetimeToQuery)).post()
-                .build();
-        } catch(HttpClientErrorException httpError) {
+            new RestBuilder<String>(RestService.URL).path(Uris.RESERVES).basicAuth(token, "").body(new AvailableTime(1, datetimeToQuery))
+                    .post().build();
+            fail();
+        } catch (HttpClientErrorException httpError) {
             assertEquals(HttpStatus.CONFLICT, httpError.getStatusCode());
             assertTrue(httpError.getResponseBodyAsString().contains(InvalidCourtReserveTrainingExistsException.class.getSimpleName()));
-            LogManager.getLogger(this.getClass())
-                    .info("testCreateReserveMatchingTraining (" + httpError.getMessage() + "):\n    " + httpError.getResponseBodyAsString());
+            LogManager.getLogger(this.getClass()).info(
+                    "testCreateReserveMatchingTraining (" + httpError.getMessage() + "):\n    " + httpError.getResponseBodyAsString());
         }
 
     }
-    
+
     @After
     public void deleteAll() {
         new RestService().deleteAll();
