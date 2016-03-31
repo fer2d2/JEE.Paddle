@@ -109,9 +109,6 @@ public class TrainingResourceFunctionalTesting {
         endDatetime.set(Calendar.HOUR_OF_DAY, 15);
         endDatetime.set(Calendar.MINUTE, 0);
 
-        assertEquals(datetimeToQuery.get(Calendar.DAY_OF_WEEK), startDatetime.get(Calendar.DAY_OF_WEEK));
-        assertEquals(datetimeToQuery.get(Calendar.HOUR_OF_DAY), startDatetime.get(Calendar.HOUR_OF_DAY));
-
         assertEquals(0, basicDataService.countReserves());
 
         String token = restService.registerAndLoginPlayer();
