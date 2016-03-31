@@ -27,9 +27,9 @@ import business.api.exceptions.NotFoundCourtIdException;
 import business.api.exceptions.NotFoundTrainingIdException;
 import business.api.exceptions.NotFoundUserIdException;
 import business.services.BasicDataService;
-import business.wrapper.AvailableTime;
 import business.wrapper.SimpleUserWrapper;
 import business.wrapper.TrainingWrapper;
+import business.wrapper.TrainingWrapperBuilder;
 import config.PersistenceConfig;
 import config.TestsPersistenceConfig;
 
@@ -50,15 +50,15 @@ public class TrainingResourceFunctionalTesting {
 
     public final int MAX_TRAINEES = 4;
 
-    final long DAY_MILLISECONDS = 86400000;
+    public final long DAY_MILLISECONDS = 86400000;
 
-    final int WEEK_DAYS = 7;
+    public final int WEEK_DAYS = 7;
 
     @Before
     public void initialize() {
         restService.deleteAll();
         generateCourts();
-        generateUsers();
+        restService.generateDefaultUsers();
     }
 
     // createTraining
@@ -90,59 +90,15 @@ public class TrainingResourceFunctionalTesting {
     }
 
     @Test
-    public void testCreateTrainingDeletingReserves() {
-        Calendar startDatetime = GregorianCalendar.getInstance();
-        Calendar endDatetime = GregorianCalendar.getInstance();
-        Calendar datetimeToQuery = GregorianCalendar.getInstance();
-
-        datetimeToQuery.setTimeInMillis(datetimeToQuery.getTimeInMillis() + DAY_MILLISECONDS);
-        datetimeToQuery.set(Calendar.HOUR_OF_DAY, 15);
-        datetimeToQuery.set(Calendar.MINUTE, 0);
-
-        startDatetime.setTimeInMillis(datetimeToQuery.getTimeInMillis() - (WEEK_DAYS * DAY_MILLISECONDS));
-        ;
-        startDatetime.set(Calendar.HOUR_OF_DAY, 15);
-        startDatetime.set(Calendar.MINUTE, 0);
-
-        endDatetime.setTimeInMillis(datetimeToQuery.getTimeInMillis() + (WEEK_DAYS * DAY_MILLISECONDS));
-        ;
-        endDatetime.set(Calendar.HOUR_OF_DAY, 15);
-        endDatetime.set(Calendar.MINUTE, 0);
-
-        assertEquals(0, basicDataService.countReserves());
-
-        String token = restService.registerAndLoginPlayer();
-        new RestBuilder<String>(RestService.URL).path(Uris.RESERVES).basicAuth(token, "").body(new AvailableTime(1, datetimeToQuery)).post()
-                .build();
-
-        assertEquals(1, basicDataService.countReserves());
-
-        token = restService.loginAdmin();
-        TrainingWrapper trainingWrapper = new TrainingWrapper();
-        trainingWrapper.setStartDatetime(startDatetime);
-        trainingWrapper.setEndDatetime(endDatetime);
-        trainingWrapper.setTrainer(new SimpleUserWrapper("u1@gmail.com"));
-        trainingWrapper.setCourtId(1);
-
-        new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper).clazz(TrainingWrapper.class).post()
-                .basicAuth(token, "").build();
-
-        assertEquals(0, basicDataService.countReserves());
-
-    }
-
-    @Test
     public void testCreateTrainingInvalidUser() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = new TrainingWrapper();
-        trainingWrapper.setStartDatetime(new GregorianCalendar(2016, 1, 1, 17, 0, 0));
-        trainingWrapper.setEndDatetime(new GregorianCalendar(2016, 2, 1, 17, 0, 0));
-        trainingWrapper.setTrainer(new SimpleUserWrapper(NON_EXISTENT_USER_EMAIL));
-        trainingWrapper.setCourtId(1);
+        TrainingWrapper trainingWrapper = new TrainingWrapperBuilder().startDatetime(new GregorianCalendar(2016, 1, 1, 17, 0, 0))
+                .endDatetime(new GregorianCalendar(2016, 2, 1, 17, 0, 0)).trainer(new SimpleUserWrapper(NON_EXISTENT_USER_EMAIL)).courtId(1)
+                .build();
 
         try {
-            new RestBuilder<Object>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper).post().basicAuth(token, "").build();
+            restService.createTraining(token, trainingWrapper);
             fail();
         } catch (HttpClientErrorException httpError) {
             assertEquals(HttpStatus.NOT_FOUND, httpError.getStatusCode());
@@ -156,14 +112,11 @@ public class TrainingResourceFunctionalTesting {
     public void testCreateTrainingInvalidCourt() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = new TrainingWrapper();
-        trainingWrapper.setStartDatetime(new GregorianCalendar(2016, 1, 1, 17, 0, 0));
-        trainingWrapper.setEndDatetime(new GregorianCalendar(2016, 2, 1, 17, 0, 0));
-        trainingWrapper.setTrainer(new SimpleUserWrapper("u1@gmail.com"));
-        trainingWrapper.setCourtId(3);
+        TrainingWrapper trainingWrapper = new TrainingWrapperBuilder().startDatetime(new GregorianCalendar(2016, 1, 1, 17, 0, 0))
+                .endDatetime(new GregorianCalendar(2016, 2, 1, 17, 0, 0)).trainer(new SimpleUserWrapper("u1@gmail.com")).courtId(3).build();
 
         try {
-            new RestBuilder<Object>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper).post().basicAuth(token, "").build();
+            restService.createTraining(token, trainingWrapper);
             fail();
         } catch (HttpClientErrorException httpError) {
             assertEquals(HttpStatus.NOT_FOUND, httpError.getStatusCode());
@@ -177,14 +130,11 @@ public class TrainingResourceFunctionalTesting {
     public void testCreateTrainingInvalidUserGrant() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = new TrainingWrapper();
-        trainingWrapper.setStartDatetime(new GregorianCalendar(2016, 1, 1, 17, 0, 0));
-        trainingWrapper.setEndDatetime(new GregorianCalendar(2016, 2, 1, 17, 0, 0));
-        trainingWrapper.setTrainer(new SimpleUserWrapper("u3@gmail.com"));
-        trainingWrapper.setCourtId(1);
+        TrainingWrapper trainingWrapper = new TrainingWrapperBuilder().startDatetime(new GregorianCalendar(2016, 1, 1, 17, 0, 0))
+                .endDatetime(new GregorianCalendar(2016, 2, 1, 17, 0, 0)).trainer(new SimpleUserWrapper("u3@gmail.com")).courtId(1).build();
 
         try {
-            new RestBuilder<Object>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper).post().basicAuth(token, "").build();
+            restService.createTraining(token, trainingWrapper);
             fail();
         } catch (HttpClientErrorException httpError) {
             assertEquals(HttpStatus.CONFLICT, httpError.getStatusCode());
@@ -194,33 +144,62 @@ public class TrainingResourceFunctionalTesting {
         }
     }
 
+    @Test
+    public void testCreateTrainingDeletingReserves() {
+        Calendar startDatetime = GregorianCalendar.getInstance();
+        Calendar endDatetime = GregorianCalendar.getInstance();
+        Calendar datetimeToQuery = GregorianCalendar.getInstance();
+
+        datetimeToQuery.setTimeInMillis(datetimeToQuery.getTimeInMillis() + DAY_MILLISECONDS);
+        datetimeToQuery.set(Calendar.HOUR_OF_DAY, 15);
+        datetimeToQuery.set(Calendar.MINUTE, 0);
+
+        startDatetime.setTimeInMillis(datetimeToQuery.getTimeInMillis() - (WEEK_DAYS * DAY_MILLISECONDS));
+        startDatetime.set(Calendar.HOUR_OF_DAY, 15);
+        startDatetime.set(Calendar.MINUTE, 0);
+
+        endDatetime.setTimeInMillis(datetimeToQuery.getTimeInMillis() + (WEEK_DAYS * DAY_MILLISECONDS));
+        endDatetime.set(Calendar.HOUR_OF_DAY, 15);
+        endDatetime.set(Calendar.MINUTE, 0);
+
+        assertEquals(0, basicDataService.countReserves());
+        restService.createReserve(datetimeToQuery, 1);
+        assertEquals(1, basicDataService.countReserves());
+
+        String token = restService.loginAdmin();
+        TrainingWrapper trainingWrapper = new TrainingWrapperBuilder().startDatetime(startDatetime).endDatetime(endDatetime)
+                .trainer(new SimpleUserWrapper("u1@gmail.com")).courtId(1).build();
+
+        restService.createTraining(token, trainingWrapper);
+        assertEquals(0, basicDataService.countReserves());
+    }
+
     // showTraining
 
     @Test
     public void testShowTrainings() {
         String token = restService.loginAdmin();
 
-        List<TrainingWrapper> listBefore = Arrays.asList(new RestBuilder<TrainingWrapper[]>(RestService.URL).path(Uris.TRAININGS)
-                .basicAuth(token, "").clazz(TrainingWrapper[].class).get().build());
+        List<TrainingWrapper> listBefore = getTrainingsList(token);
         assertEquals(0, listBefore.size());
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        new RestBuilder<Object>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper).post().basicAuth(token, "").build();
-
-        List<TrainingWrapper> listAfter = Arrays.asList(new RestBuilder<TrainingWrapper[]>(RestService.URL).path(Uris.TRAININGS)
-                .basicAuth(token, "").clazz(TrainingWrapper[].class).get().build());
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        restService.createTraining(token, trainingWrapper);
+        List<TrainingWrapper> listAfter = getTrainingsList(token);
         assertEquals(1, listAfter.size());
+    }
+
+    private List<TrainingWrapper> getTrainingsList(String token) {
+        return Arrays.asList(new RestBuilder<TrainingWrapper[]>(RestService.URL).path(Uris.TRAININGS).basicAuth(token, "")
+                .clazz(TrainingWrapper[].class).get().build());
     }
 
     @Test
     public void testShowTraining() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
 
         new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).pathId(trainingWrapper2.getId()).basicAuth(token, "").get()
                 .build();
@@ -247,11 +226,8 @@ public class TrainingResourceFunctionalTesting {
     public void testUpdateTraining() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
-
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
         trainingWrapper2.setCourtId(1);
 
         TrainingWrapper trainingWrapper3 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS)
@@ -266,10 +242,8 @@ public class TrainingResourceFunctionalTesting {
     public void testDeleteTraining() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
 
         new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).pathId(trainingWrapper2.getId()).delete()
                 .basicAuth(token, "").build();
@@ -297,13 +271,10 @@ public class TrainingResourceFunctionalTesting {
     public void testAddTrainee() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
 
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
-
-        List<SimpleUserWrapper> trainees = Arrays.asList(new RestBuilder<SimpleUserWrapper[]>(RestService.URL).path(Uris.USERS)
-                .path(Uris.TRAINEE).clazz(SimpleUserWrapper[].class).get().basicAuth(token, "").build());
+        List<SimpleUserWrapper> trainees = getTrainees(token);
 
         int trainingId = trainingWrapper2.getId();
         int traineeId = trainees.get(0).getId();
@@ -321,13 +292,10 @@ public class TrainingResourceFunctionalTesting {
         final int MAX_TRAINEES = 4;
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
 
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
-
-        List<SimpleUserWrapper> trainees = Arrays.asList(new RestBuilder<SimpleUserWrapper[]>(RestService.URL).path(Uris.USERS)
-                .path(Uris.TRAINEE).clazz(SimpleUserWrapper[].class).get().basicAuth(token, "").build());
+        List<SimpleUserWrapper> trainees = getTrainees(token);
 
         int trainingId = trainingWrapper2.getId();
 
@@ -350,6 +318,11 @@ public class TrainingResourceFunctionalTesting {
         }
     }
 
+    private List<SimpleUserWrapper> getTrainees(String token) {
+        return Arrays.asList(new RestBuilder<SimpleUserWrapper[]>(RestService.URL).path(Uris.USERS).path(Uris.TRAINEE)
+                .clazz(SimpleUserWrapper[].class).get().basicAuth(token, "").build());
+    }
+
     @Test
     public void testAddTraineeInvalidTraining() {
         String token = restService.loginAdmin();
@@ -370,10 +343,8 @@ public class TrainingResourceFunctionalTesting {
     public void testAddTraineeInvalidUser() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
 
         try {
             new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).pathId(trainingWrapper2.getId()).path(Uris.TRAINEE)
@@ -391,10 +362,8 @@ public class TrainingResourceFunctionalTesting {
     public void testAddTraineeInvalidUserGrant() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
 
         try {
             new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).pathId(trainingWrapper2.getId()).path(Uris.TRAINEE)
@@ -414,13 +383,9 @@ public class TrainingResourceFunctionalTesting {
     public void testDeleteTrainee() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
-
-        List<SimpleUserWrapper> trainees = Arrays.asList(new RestBuilder<SimpleUserWrapper[]>(RestService.URL).path(Uris.USERS)
-                .path(Uris.TRAINEE).clazz(SimpleUserWrapper[].class).get().basicAuth(token, "").build());
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
+        List<SimpleUserWrapper> trainees = getTrainees(token);
 
         int trainingId = trainingWrapper2.getId();
         int traineeId = trainees.get(0).getId();
@@ -443,10 +408,8 @@ public class TrainingResourceFunctionalTesting {
     public void testDeleteTraineeInvalidTraining() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper).clazz(TrainingWrapper.class).post()
-                .basicAuth(token, "").build();
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        restService.createTraining(token, trainingWrapper);
 
         try {
             new RestBuilder<Object>(RestService.URL).path(Uris.TRAININGS).pathId(NON_EXISTENT_TRAINING).path(Uris.TRAINEE)
@@ -464,11 +427,8 @@ public class TrainingResourceFunctionalTesting {
     public void testDeleteTraineeInvalidUser() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
-
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
         int trainingId = trainingWrapper2.getId();
 
         try {
@@ -487,11 +447,8 @@ public class TrainingResourceFunctionalTesting {
     public void testDeleteTraineeInvalidUserRole() {
         String token = restService.loginAdmin();
 
-        TrainingWrapper trainingWrapper = generateTrainingWrapper();
-
-        TrainingWrapper trainingWrapper2 = new RestBuilder<TrainingWrapper>(RestService.URL).path(Uris.TRAININGS).body(trainingWrapper)
-                .clazz(TrainingWrapper.class).post().basicAuth(token, "").build();
-
+        TrainingWrapper trainingWrapper = generateDefaultTrainingWrapper();
+        TrainingWrapper trainingWrapper2 = restService.createTraining(token, trainingWrapper);
         int trainingId = trainingWrapper2.getId();
         int traineeId = trainingWrapper2.getTrainer().getId();
 
@@ -512,37 +469,13 @@ public class TrainingResourceFunctionalTesting {
         restService.deleteAll();
     }
 
-    private TrainingWrapper generateTrainingWrapper() {
-        TrainingWrapper trainingWrapper = new TrainingWrapper();
-        trainingWrapper.setStartDatetime(new GregorianCalendar(2016, 1, 1, 17, 0, 0));
-        trainingWrapper.setEndDatetime(new GregorianCalendar(2016, 2, 1, 17, 0, 0));
-        trainingWrapper.setTrainer(new SimpleUserWrapper("u2@gmail.com"));
-        trainingWrapper.setCourtId(2);
-        return trainingWrapper;
+    private TrainingWrapper generateDefaultTrainingWrapper() {
+        return new TrainingWrapperBuilder().startDatetime(new GregorianCalendar(2016, 1, 1, 17, 0, 0))
+                .endDatetime(new GregorianCalendar(2016, 2, 1, 17, 0, 0)).trainer(new SimpleUserWrapper("u2@gmail.com")).courtId(2).build();
     }
 
     private void generateCourts() {
         restService.createCourt("1");
         restService.createCourt("2");
-    }
-
-    private void generateUsers() {
-        final int TRAINERS_NUMBER = 2;
-        final int TRAINEES_NUMBER = 5;
-
-        final int TRAINERS_OFFSET = 1;
-        final int TRAINEES_LAST = TRAINERS_NUMBER + TRAINEES_NUMBER;
-
-        int suffix = TRAINERS_OFFSET;
-
-        while (suffix <= TRAINERS_NUMBER) {
-            restService.registerTrainer(suffix);
-            suffix++;
-        }
-
-        while (suffix <= TRAINEES_LAST) {
-            restService.registerTrainee(suffix);
-            suffix++;
-        }
     }
 }
