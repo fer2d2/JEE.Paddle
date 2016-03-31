@@ -2,31 +2,33 @@
 #### Back-end con Tecnologías de Código Abierto (SPRING)
 #### [Máster en Ingeniería Web por la U.P.M.](http://miw.etsisi.upm.es)
 
-> Proyecto básicos para el uso de la tecnología Spring
+### Datos del alumno:
 
-### Tecnologías necesarias
-* Java
-* Spring
-* Eclipse
-* Maven
-* MySQL
-* Tomcat
+- Nombre: Fernando Moro Hernández
+- Matrícula: BH0611
+- Grupo: FdS
 
+### Tareas realizadas
 
-### Importar el proyecto mediante Eclipse
-1. Clonar mediante Eclipse este repositorio en la máquina local: https://youtu.be/rQNixJQQ25g
-1. Importar el repositorio clonado: https://youtu.be/yYvD8ZJtWwI
-1. Crear una Base de Datos llamada: `paddle`
+#### Resumen
 
-### Documentación
-#### Casos de Uso
-![Casos de uso](/docs/Paddle.UseCaseView.png "Casos de Uso")
-#### Arquitectura de paquetes
-![Casos de uso](/docs/Paddle.Architecture.png "Casos de Uso")
-#### Entidades
-![Casos de uso](/docs/Paddle.Entities.png "Casos de Uso")
-#### Daos
-![Casos de uso](/docs/Paddle.Daos.png "Casos de Uso")
+- ECP1. Persistencia (30%)
+    - A, B, C.
+- ECP1. Api (50%)
+    - A, B, C.
+- ECP1. Web (20%)
+    - A.
 
-###### Autor: Jesús Bernal Bermúdez U.P.M.
-
+#### Detalle
+- ECP1. Persistencia (30%)
+    - Se modifica la capa de persistencia para que los token caduquen en una hora.
+    - Se añaden tests para la funcionalidad solicitada.
+    - Se amplía la capa de persistencia para ofrecer un servicio de clases de Pádel.
+    - Se añaden tests para la funcionalidad solicitada.
+- ECP1. Api (50%)
+    - Se modifica la capa de negocio para hacer uso de la mejora de caducidad. Se implementa el comportamiento a través de la clase `UserDetailsServiceImpl`, utilizando la variable `credentialsNonExpired` del usuario de Spring.
+    - Se añaden tests para la funcionalidad solicitada.
+    - Se amplía la capa de negocio con una interfaz REST para los entrenamientos. Se exponen las opciones CRUD para un entrenamiento, y así como las opciones de añadir y eliminar alumno. Se controla mediante excepciones cualquier comportamiento anómalo detectado. Se configura la autorización de acceso para las rutas involucradas.
+    - Se añaden tests para la funcionalidad solicitada.
+- ECP1. Web (20%)
+    - Utilizando la tecnología JSP, se generan pantallas web para listado, alta y borrado de pistas y usuarios, pudiendo activar o desactivar desde la pantalla de listado en el caso de las pistas. Se utilizan *flash parameters* para mostrar los mensajes que notifican al usuario que el proceso de inserción ha sido correcto.
