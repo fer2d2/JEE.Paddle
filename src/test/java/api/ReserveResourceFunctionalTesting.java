@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
 
 import org.apache.logging.log4j.LogManager;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -27,6 +28,11 @@ public class ReserveResourceFunctionalTesting {
 
     final int WEEK_DAYS = 7;
 
+    @Before
+    public void initialize() {
+        restService.deleteAll();
+    }
+    
     @Test
     public void testshowAvailability() {
         restService.createCourt("1");

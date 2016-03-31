@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -18,6 +19,11 @@ import business.wrapper.CourtState;
 public class CourtResourceFunctionalTesting {
 
     RestService restService = new RestService();
+    
+    @Before
+    public void initialize() {
+        restService.deleteAll();
+    }
     
     @Test
     public void testCreateCourt() {

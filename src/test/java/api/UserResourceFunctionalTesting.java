@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.apache.logging.log4j.LogManager;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -15,6 +16,13 @@ import business.wrapper.UserWrapperBuilder;
 
 public class UserResourceFunctionalTesting {
 
+    RestService restService = new RestService();
+    
+    @Before
+    public void initialize() {
+        restService.deleteAll();
+    }
+    
     @Test
     public void testCreate() {
         for (int i = 0; i < 4; i++) {
