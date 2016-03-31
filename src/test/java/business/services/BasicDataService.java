@@ -5,6 +5,7 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import data.daos.ReserveDao;
 import data.daos.TokenDao;
 import data.daos.UserDao;
 import data.entities.Token;
@@ -22,6 +23,9 @@ public class BasicDataService {
     @Autowired
     private TokenDao tokenDao;
     
+    @Autowired
+    private ReserveDao reserveDao;
+    
     public String generateExpiredToken(String username) {
         User user = userDao.findByUsernameOrEmail(username);
         Token invalidToken = new Token(user);
@@ -32,5 +36,9 @@ public class BasicDataService {
         tokenDao.save(invalidToken);
         
         return invalidToken.getValue();
+    }
+    
+    public long countReserves() {
+        return reserveDao.count();
     }
 }

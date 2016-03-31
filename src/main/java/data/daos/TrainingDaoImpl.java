@@ -2,7 +2,9 @@ package data.daos;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,8 +15,9 @@ import data.entities.User;
 public class TrainingDaoImpl implements TrainingExtended {
 
     final long DAY_MILLISECONDS = 86400000;
+
     final int WEEK_DAYS = 7;
-    
+
     @Autowired
     private TrainingDao trainingDao;
 
@@ -75,65 +78,86 @@ public class TrainingDaoImpl implements TrainingExtended {
     public void deleteReservesMathingTraining(Training training) {
         Calendar startDatetime = training.getStartDatetime();
         Calendar endDatetime = training.getEndDatetime();
-        
+
+        /**
+         * Shared TimeZone conversion required for APIs time headers
+         */
+        Calendar spainTimeStartDatetime = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
+        spainTimeStartDatetime.setTimeInMillis(startDatetime.getTimeInMillis());
+
         List<Reserve> reserves = reserveDao.findByDateBetween(startDatetime, endDatetime);
 
-        int trainingDayOfWeek = startDatetime.get(Calendar.DAY_OF_WEEK);
-        int trainingHour = startDatetime.get(Calendar.HOUR_OF_DAY);
-        int trainingMinutes = startDatetime.get(Calendar.MINUTE);
+        int trainingDayOfWeek = spainTimeStartDatetime.get(Calendar.DAY_OF_WEEK);
+        int trainingHour = spainTimeStartDatetime.get(Calendar.HOUR_OF_DAY);
+        int trainingMinutes = spainTimeStartDatetime.get(Calendar.MINUTE);
 
         for (Reserve reserve : reserves) {
             Calendar reserveDate = reserve.getDate();
-            int reserveDayOfWeek = reserveDate.get(Calendar.DAY_OF_WEEK);
-            int reserveHour = reserveDate.get(Calendar.HOUR_OF_DAY);
-            int reserveMinutes = reserveDate.get(Calendar.MINUTE);
-            
-            if(reserve.getCourt().getId() == training.getCourt().getId()) {
+            Calendar spainTimeReserveDate = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
+            spainTimeReserveDate.setTimeInMillis(reserveDate.getTimeInMillis());
+
+            int reserveDayOfWeek = spainTimeReserveDate.get(Calendar.DAY_OF_WEEK);
+            int reserveHour = spainTimeReserveDate.get(Calendar.HOUR_OF_DAY);
+            int reserveMinutes = spainTimeReserveDate.get(Calendar.MINUTE);
+
+            if (reserve.getCourt().getId() == training.getCourt().getId()) {
                 if (reserveDayOfWeek == trainingDayOfWeek && reserveHour == trainingHour && reserveMinutes == trainingMinutes) {
                     reserveDao.delete(reserve);
                 }
             }
         }
     }
-    
+
     @Override
     public boolean existsTrainingClassForDay(Calendar day) {
         List<Training> trainings = trainingDao.findAll();
-        
-        int dayOfWeek = day.get(Calendar.DAY_OF_WEEK);
-        int hour = day.get(Calendar.HOUR_OF_DAY);
-        int minutes = day.get(Calendar.MINUTE);
-        
-        for(Training training : trainings) {
+
+        /**
+         * Shared TimeZone conversion required for APIs time headers
+         */
+        Calendar spainTimeGivenDay = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
+        spainTimeGivenDay.setTimeInMillis(day.getTimeInMillis());
+
+        int dayOfWeek = spainTimeGivenDay.get(Calendar.DAY_OF_WEEK);
+        int hour = spainTimeGivenDay.get(Calendar.HOUR_OF_DAY);
+        int minutes = spainTimeGivenDay.get(Calendar.MINUTE);
+
+        for (Training training : trainings) {
             Calendar startDatetime = training.getStartDatetime();
             Calendar endDatetime = training.getEndDatetime();
-            
-            int trainingDayOfWeek = startDatetime.get(Calendar.DAY_OF_WEEK);
-            int trainingHour = startDatetime.get(Calendar.HOUR_OF_DAY);
-            int trainingMinutes = startDatetime.get(Calendar.MINUTE);
-            
-            if(startDatetime.getTimeInMillis() <= day.getTimeInMillis() && day.getTimeInMillis() <= endDatetime.getTimeInMillis()) {
+
+            Calendar spainTimeStartDatetime = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
+            spainTimeStartDatetime.setTimeInMillis(startDatetime.getTimeInMillis());
+
+            Calendar spainTimeEndDatetime = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
+            spainTimeEndDatetime.setTimeInMillis(endDatetime.getTimeInMillis());
+
+            int trainingDayOfWeek = spainTimeStartDatetime.get(Calendar.DAY_OF_WEEK);
+            int trainingHour = spainTimeStartDatetime.get(Calendar.HOUR_OF_DAY);
+            int trainingMinutes = spainTimeStartDatetime.get(Calendar.MINUTE);
+
+            if (startDatetime.getTimeInMillis() <= day.getTimeInMillis() && day.getTimeInMillis() <= endDatetime.getTimeInMillis()) {
                 if (dayOfWeek == trainingDayOfWeek && hour == trainingHour && minutes == trainingMinutes) {
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     public List<Calendar> findAllDatetimesForTraining(Training training) {
         List<Calendar> datetimes = new ArrayList<>();
-        
+
         long startDatetime = training.getStartDatetime().getTimeInMillis();
         long endDatetime = training.getEndDatetime().getTimeInMillis();
-        
-        for(long date = startDatetime; date <= endDatetime; date+=(DAY_MILLISECONDS * WEEK_DAYS)) {
+
+        for (long date = startDatetime; date <= endDatetime; date += (DAY_MILLISECONDS * WEEK_DAYS)) {
             Calendar datetimeToAdd = Calendar.getInstance();
             datetimeToAdd.setTimeInMillis(date);
             datetimes.add(datetimeToAdd);
         }
-        
+
         return datetimes;
     }
 }
